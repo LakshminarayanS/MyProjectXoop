@@ -1,4 +1,4 @@
-package com.Xooper.AIAPP;
+package com.XooperFlows;
 
 import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
@@ -6,10 +6,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.Baseclass.com.BaseClass;
+import com.Xooper.AIAPP.AIJDCreationTest;
+import com.Xooper.AIAPP.RegistrationTest;
+import com.Xooper.AIAPP.SignUpSignOutTest;
 import com.aventstack.extentreports.Status;
 import com.utils.ExtentReportManager;
 
-public class HappyFlow extends BaseClass {
+public class HappyPathFlow extends BaseClass {
 
 	@BeforeClass
 	public void setup(ITestResult result) {
@@ -58,6 +61,8 @@ public class HappyFlow extends BaseClass {
 		try {
 
 			SignUpSignOutTest.testSignUpSignOut(OTP, EMAIL_ID);
+
+			ExtentReportManager.pass("Login successful");
 
 		} catch (Exception e) {
 

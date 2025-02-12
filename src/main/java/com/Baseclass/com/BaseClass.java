@@ -217,14 +217,14 @@ public class BaseClass extends FrameworkConstants {
 		}
 	}
 
-	public static boolean takeScreenshot(String pictureStorePath) throws IOException {
+	public static boolean takeScreenshot(String screenShotPath) throws IOException {
 
 		try {
 			TakesScreenshot ts = (TakesScreenshot) driver;
 			File screenshotAs = ts.getScreenshotAs(OutputType.FILE);
-			File saveFile = new File(pictureStorePath);
+			File saveFile = new File(screenShotPath);
 			FileUtils.copyFile(screenshotAs, saveFile);
-			System.out.println("Screenshot saved to: " + pictureStorePath);
+			System.out.println("Screenshot saved to: " + screenShotPath);
 
 		} catch (Exception e) {
 
@@ -235,7 +235,7 @@ public class BaseClass extends FrameworkConstants {
 		return false;
 	}
 
-	public static void closeCurrentBrowser(ITestResult result, String pictureStorePath) {
+	public static void closeCurrentBrowser(ITestResult result, String screenShotPath) {
 
 		try {
 
@@ -247,9 +247,9 @@ public class BaseClass extends FrameworkConstants {
 				// result.getMethod().getMethodName());
 
 				// Attach screenshot to the Extent Report
-				if (takeScreenshot(pictureStorePath)) {
+				if (takeScreenshot(screenShotPath)) {
 					ExtentReportManager.log(Status.FAIL, "Test Failed: " + result.getThrowable());
-					ExtentReportManager.test.addScreenCaptureFromPath(pictureStorePath);
+					ExtentReportManager.test.addScreenCaptureFromPath(screenShotPath);
 				} else {
 					ExtentReportManager.log(Status.FAIL, "Test Failed: " + result.getThrowable());
 				}
@@ -271,14 +271,14 @@ public class BaseClass extends FrameworkConstants {
 		}
 	}
 
-	public static void closeAllBrowsers(ITestResult result, String pictureStorePath) {
+	public static void closeAllBrowsers(ITestResult result, String screenShotPath) {
 
 		try {
 			if (result.getStatus() == ITestResult.FAILURE) {
 				// Capture screenshot on test failure
-				if (takeScreenshot(pictureStorePath)) {
+				if (takeScreenshot(screenShotPath)) {
 					ExtentReportManager.log(Status.FAIL, "Test Failed: " + result.getThrowable());
-					ExtentReportManager.test.addScreenCaptureFromPath(pictureStorePath);
+					ExtentReportManager.test.addScreenCaptureFromPath(screenShotPath);
 				} else {
 					ExtentReportManager.log(Status.FAIL, "Test Failed: " + result.getThrowable());
 				}

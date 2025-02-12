@@ -31,7 +31,31 @@ public class ExtentReportManager {
 
 		test.log(status, message);
 	}
+	
+	public static void log(Status status, String message, String screenShotPath) {
+        if (test == null) {
+            throw new IllegalStateException("Test is not started. Call startTest() first.");
+        }
 
+        test.log(status, message);
+        test.addScreenCaptureFromPath(screenShotPath); 
+    }
+	
+	public static void logFail(String message, String screenShotPath) {
+        log(Status.FAIL, message);
+        if (screenShotPath != null) {
+            test.addScreenCaptureFromPath(screenShotPath);
+        }
+    }
+	
+	public static void logSkip(String message) {
+        log(Status.SKIP, message);
+    }
+	
+	public static void pass(String message) {
+        log(Status.PASS, message);
+    }
+	
 	public static void endTest() {
 
 		if (extent != null) {
