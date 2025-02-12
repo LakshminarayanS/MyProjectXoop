@@ -35,10 +35,10 @@ public class NegativeTestFlow extends BaseClass {
 
 		try {
 
-			RegistrationTest.testRegistration(FULL_NAME, EMAIL_ID, COMPANY_NAME, PHONE_NO, PASS_WORD, CONFIRM_PASSWORD);
+			RegistrationTest.testRegistration("LN", "lak%$(.in@gov.com", "420", "", "Password", "Password0");
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RuntimeException("User registration test failed.", e);
+			throw new RuntimeException("User registration test failed with invalid data.", e);
 		}
 
 	}
@@ -71,7 +71,7 @@ public class NegativeTestFlow extends BaseClass {
 
 		try {
 
-			SignUpSignOutTest.testSignUpSignOut(OTP, EMAIL_ID);
+			SignUpSignOutTest.testSignUpSignOut("000000", "lak%$(.in@gov.com^");
 
 			ExtentReportManager.logFail("Login Failure", SCREENSHOT_DIR);
 
@@ -87,8 +87,7 @@ public class NegativeTestFlow extends BaseClass {
 
 		try {
 
-			AIJDCreationTest.testAIJDCreation(JOB_TITLE, JOB_SKILLS, JOB_LOCATION, JOB_TYPE, EMPLOYEMENT_TYPE,
-					EXPERIENCE_LEVEL, SALARY_LEVEL, LANGUAGE_PREFERENCE, TONE);
+			AIJDCreationTest.testAIJDCreation("Dev", "#", "Home", "", "2 hours", "Fresher", "9LPA", "Tamil", "");
 
 		} catch (Exception e) {
 			e.printStackTrace();
