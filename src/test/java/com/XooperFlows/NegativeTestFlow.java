@@ -41,9 +41,9 @@ public class NegativeTestFlow extends BaseClass {
 		try {
 			ExtentReportManager.startTest("User Registration Test");
 			ExtentReportManager.log(Status.INFO, "Starting user registration test");
-			
+
 			RegistrationTest.testRegistration("LN", "lak%$(.in@gov.com", "420", "", "Password", "Password0");
-			
+
 			ExtentReportManager.log(Status.PASS, "User registration test completed successfully");
 		} catch (Exception e) {
 			ExtentReportManager.log(Status.FAIL, "User registration test failed: " + e.getMessage());
@@ -84,7 +84,7 @@ public class NegativeTestFlow extends BaseClass {
 		try {
 			ExtentReportManager.startTest("User SignUp and SignOut Test");
 			ExtentReportManager.log(Status.INFO, "Starting user sign-up and sign-out test for email: " + EMAIL_ID);
-			
+
 			SignUpSignOutTest.testSignUpSignOut("000000", "lak%$(.in@gov.com^");
 
 			ExtentReportManager.pass("Login successful");
@@ -103,10 +103,16 @@ public class NegativeTestFlow extends BaseClass {
 	public void testAIJDCreation() {
 
 		try {
+			ExtentReportManager.startTest("AI JD Creation Test");
+			ExtentReportManager.log(Status.INFO, "Starting AI JD Creation test with Job Title: " + JOB_TITLE);
 
 			AIJDCreationTest.testAIJDCreation("Dev", "#", "Home", "", "2 hours", "Fresher", "9LPA", "Tamil", "");
 
+			ExtentReportManager.log(Status.PASS, "AI JD Creation test passed successfully for Job Title: " + JOB_TITLE);
 		} catch (Exception e) {
+			ExtentReportManager.log(Status.FAIL,
+					"AI JD Creation test failed for Job Title: " + JOB_TITLE + ". Error: " + e.getMessage());
+
 			e.printStackTrace();
 			throw new RuntimeException("AI JD Creation test failed.", e);
 		}
@@ -118,11 +124,16 @@ public class NegativeTestFlow extends BaseClass {
 			String tone) {
 
 		try {
+			ExtentReportManager.startTest("AI JD Creation Test - " + jobtitle);
+			ExtentReportManager.log(Status.INFO, "Starting AI JD Creation test with Job Title: " + jobtitle);
 
 			AIJDCreationTest.testAIJDCreation(jobtitle, skills, joblocation, jobtype, employementtype, experiencelevel,
 					salarylevel, languagepreference, tone);
-
+			ExtentReportManager.log(Status.PASS, "AI JD Creation test passed successfully for Job Title: " + jobtitle);
 		} catch (Exception e) {
+			ExtentReportManager.log(Status.FAIL,
+					"AI JD Creation test failed for Job Title: " + jobtitle + ". Error: " + e.getMessage());
+
 			e.printStackTrace();
 			throw new RuntimeException("AI JD Creation test failed with Excel Data.", e);
 		}
@@ -150,6 +161,5 @@ public class NegativeTestFlow extends BaseClass {
 			ExtentReportManager.log(Status.FAIL, "Error during teardown: " + e.getMessage());
 			e.printStackTrace();
 		}
-
 	}
 }

@@ -21,7 +21,7 @@ public class SignUpSignOutTest extends BaseClass {
 
 		try {
 
-			ExtentReportManager.log(Status.INFO, "Genarating OTP");
+			ExtentReportManager.log(Status.INFO, "Generating OTP");
 			clickElement(pom.getSignpage().getOTPGenerate());
 
 			ExtentReportManager.log(Status.INFO, "Entering received OTP");

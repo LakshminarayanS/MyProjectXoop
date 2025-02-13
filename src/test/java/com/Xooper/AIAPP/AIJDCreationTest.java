@@ -2,7 +2,6 @@ package com.Xooper.AIAPP;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.DataProvider;
@@ -34,19 +33,22 @@ public class AIJDCreationTest extends BaseClass {
 
 			ExtentReportManager.log(Status.INFO, "Selecting skills");
 			selectFromDropdown(pom.getAijdpage().getSkillField(), skills, DROPDOWN_TYPE);
-			
-			Set<String> availableOptions = pom.getAijdpage().getSkillList().stream()
-                    .map(WebElement::getText)
-                    .filter(text -> text != null && !text.trim().isEmpty()) // Filter out null or empty strings
-                    .collect(Collectors.toSet());
+
+			Set<String> availableOptions = new HashSet<>();
+			for (WebElement element : pom.getAijdpage().getSkillList()) {
+				String text = element.getText();
+				if (text != null && !text.trim().isEmpty()) { // Filter out null or empty strings
+					availableOptions.add(text.trim());
+				}
+			}
 
 			// Define values to select
 			Set<String> valuesToSelect = new HashSet<>();
 			valuesToSelect.add("option1");
 			valuesToSelect.add("option2");
-			
-			valuesToSelect.retainAll(availableOptions); // Select only valid options
+			valuesToSelect.add("option3");
 
+			valuesToSelect.retainAll(availableOptions); // Select only valid options
 
 			ExtentReportManager.log(Status.INFO, "Selecting skills");
 			handleSpecificCheckBoxes(pom.getAijdpage().getSkillList(), valuesToSelect, true);
@@ -76,26 +78,26 @@ public class AIJDCreationTest extends BaseClass {
 			ExtentReportManager.log(Status.INFO, "Selecting tone");
 			selectFromDropdown(pom.getAijdpage().getToneField(), tone, DROPDOWN_TYPE);
 
-		       ExtentReportManager.log(Status.INFO, "Clicking Post");
-		        waitForElementToBeClickable(pom.getAijdpage().getPostField());
-		        clickElement(pom.getAijdpage().getPostField());
+			ExtentReportManager.log(Status.INFO, "Clicking Post");
+			waitForElementToBeClickable(pom.getAijdpage().getPostField());
+			clickElement(pom.getAijdpage().getPostField());
 
-		        ExtentReportManager.log(Status.INFO, "Editing the Job Description");
-		        waitForElementToBeClickable(pom.getAijdpage().getEditOption());
-		        clickElement(pom.getAijdpage().getEditOption());
+			ExtentReportManager.log(Status.INFO, "Editing the Job Description");
+			waitForElementToBeClickable(pom.getAijdpage().getEditOption());
+			clickElement(pom.getAijdpage().getEditOption());
 
-		        ExtentReportManager.log(Status.INFO, "Submitting to generate Job Description");
-		        waitForElementToBeClickable(pom.getAijdpage().getSubmittoCreateJD());
-		        clickElement(pom.getAijdpage().getSubmittoCreateJD());
-		        
-		        String confirmationText = getTextFromElement(pom.getAijdpage().getSuccessMessage());
-		        Assert.isTrue(confirmationText.contains("Job Description Created"), 
-		                      "AI JD Creation failed: Confirmation message mismatch.");
+			ExtentReportManager.log(Status.INFO, "Submitting to generate Job Description");
+			waitForElementToBeClickable(pom.getAijdpage().getSubmittoCreateJD());
+			clickElement(pom.getAijdpage().getSubmittoCreateJD());
+
+			String confirmationText = getTextFromElement(pom.getAijdpage().getSuccessMessage());
+			Assert.isTrue(confirmationText.contains("Job Description Created"),
+					"AI JD Creation failed: Confirmation message mismatch.");
 
 		} catch (Exception e) {
 
 			ExtentReportManager.log(Status.FAIL, "AI JD Creation test failed due to: " + e.getMessage());
-	        throw new RuntimeException("AI JD Creation test failed.", e);
+			throw new RuntimeException("AI JD Creation test failed.", e);
 		}
 	}
 
@@ -103,15 +105,15 @@ public class AIJDCreationTest extends BaseClass {
 	public Object[][] getData() {
 
 		ExtentReportManager.log(Status.INFO, "Fetching AI JD creation data from Excel");
-		
+
 		Object[][] testData = ExcelUtils.getTestData("AIJDexcelfilepath", "sheet2");
 
-	    if (testData == null || testData.length == 0) {
-	        ExtentReportManager.log(Status.WARNING, "No data found in Excel for AI JD creation.");
-	        throw new RuntimeException("Test data is empty or could not be retrieved.");
-	    }
+		if (testData == null || testData.length == 0) {
+			ExtentReportManager.log(Status.WARNING, "No data found in Excel for AI JD creation.");
+			throw new RuntimeException("Test data is empty or could not be retrieved.");
+		}
 
-	    return testData;
+		return testData;
 	}
 
 }

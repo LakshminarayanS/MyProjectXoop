@@ -159,7 +159,6 @@ public class HappyPathFlow extends BaseClass {
 			ExtentReportManager.log(Status.FAIL, "Error during teardown: " + e.getMessage());
 			e.printStackTrace();
 		}
-
 	}
 
 }
