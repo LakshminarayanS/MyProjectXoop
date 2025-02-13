@@ -1,12 +1,16 @@
 package com.PageObjectModel.com;
 
+import java.time.Duration;
 import java.util.List;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class AI_JDCreator_Page {
 
@@ -101,6 +105,11 @@ public class AI_JDCreator_Page {
 
 	public WebElement getSubmittoCreateJD() {
 		return submittoCreateJD;
+	}
+
+	public WebElement getSuccessMessage() {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='success-message']")));
 	}
 
 	public AI_JDCreator_Page(WebDriver jd) {

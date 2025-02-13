@@ -20,11 +20,16 @@ public class NegativeTestFlow extends BaseClass {
 
 		try {
 			ExtentReportManager.startTest(result.getMethod().getMethodName());
+			ExtentReportManager.log(Status.INFO, "Test execution started: " + result.getMethod().getMethodName());
+
 			getDriver(BROWSER_NAME);
-			ExtentReportManager.log(Status.INFO, "Navigating to Xooper");
+			ExtentReportManager.log(Status.INFO, "Browser launched: " + BROWSER_NAME);
+
+			ExtentReportManager.log(Status.INFO, "Navigating to URL: " + BASE_URL);
 			navigateGetUrl(BASE_URL);
 
 		} catch (Exception e) {
+			ExtentReportManager.log(Status.FAIL, "Setup failed: " + e.getMessage());
 			e.printStackTrace();
 			throw new RuntimeException("Setup failed.", e);
 		}
@@ -34,11 +39,16 @@ public class NegativeTestFlow extends BaseClass {
 	public void testRegistrationData() {
 
 		try {
-
+			ExtentReportManager.startTest("User Registration Test");
+			ExtentReportManager.log(Status.INFO, "Starting user registration test");
+			
 			RegistrationTest.testRegistration("LN", "lak%$(.in@gov.com", "420", "", "Password", "Password0");
+			
+			ExtentReportManager.log(Status.PASS, "User registration test completed successfully");
 		} catch (Exception e) {
+			ExtentReportManager.log(Status.FAIL, "User registration test failed: " + e.getMessage());
 			e.printStackTrace();
-			throw new RuntimeException("User registration test failed with invalid data.", e);
+			throw new RuntimeException("User registration test failed.", e);
 		}
 
 	}
@@ -48,10 +58,12 @@ public class NegativeTestFlow extends BaseClass {
 			String password, String confirmpassword) {
 
 		try {
-			// ExtentReportManager.logSkip("Registration Skip");
-
+			ExtentReportManager.startTest("User Registration Test with Excel Data");
 			RegistrationTest.testRegistration(fullname, email, companyname, phone, password, confirmpassword);
+			ExtentReportManager.log(Status.PASS, "User registration test passed for email: " + email);
 		} catch (Exception e) {
+			ExtentReportManager.log(Status.FAIL,
+					"User registration test failed for email: " + email + ". Error: " + e.getMessage());
 			e.printStackTrace();
 			throw new RuntimeException("User registration test failed with Excel Data.", e);
 		}
@@ -70,12 +82,17 @@ public class NegativeTestFlow extends BaseClass {
 	public void testUserSignUpSignOut() {
 
 		try {
-
+			ExtentReportManager.startTest("User SignUp and SignOut Test");
+			ExtentReportManager.log(Status.INFO, "Starting user sign-up and sign-out test for email: " + EMAIL_ID);
+			
 			SignUpSignOutTest.testSignUpSignOut("000000", "lak%$(.in@gov.com^");
 
-			ExtentReportManager.logFail("Login Failure", SCREENSHOT_DIR);
-
+			ExtentReportManager.pass("Login successful");
+			ExtentReportManager.log(Status.PASS, "User sign-up and sign-out test passed for email: " + EMAIL_ID);
 		} catch (Exception e) {
+
+			ExtentReportManager.log(Status.FAIL,
+					"User sign-up and sign-out test failed for email: " + EMAIL_ID + ". Error: " + e.getMessage());
 
 			e.printStackTrace();
 			throw new RuntimeException("User SignUp and SignOut test failed.", e);
@@ -115,11 +132,22 @@ public class NegativeTestFlow extends BaseClass {
 	public void teardown(ITestResult result) {
 
 		try {
+			if (result.getStatus() == ITestResult.FAILURE) {
+
+				String screenshotPath = SCREENSHOT_DIR + "/" + result.getName() + ".png";
+				ExtentReportManager.log(Status.FAIL, "Test failed: " + result.getName());
+				ExtentReportManager.log(Status.FAIL, "Error: " + result.getThrowable().getMessage());
+				ExtentReportManager.test.addScreenCaptureFromPath(screenshotPath);
+			} else if (result.getStatus() == ITestResult.SUCCESS) {
+				ExtentReportManager.log(Status.PASS, "Test passed: " + result.getName());
+			} else if (result.getStatus() == ITestResult.SKIP) {
+				ExtentReportManager.log(Status.SKIP, "Test skipped: " + result.getName());
+			}
 			closeCurrentBrowser(result, SCREENSHOT_DIR);
 			ExtentReportManager.endTest();
 
 		} catch (Exception e) {
-			System.err.println("Error during teardown: " + e.getMessage());
+			ExtentReportManager.log(Status.FAIL, "Error during teardown: " + e.getMessage());
 			e.printStackTrace();
 		}
 

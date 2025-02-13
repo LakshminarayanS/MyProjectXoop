@@ -8,8 +8,6 @@ import com.aventstack.extentreports.Status;
 import com.utils.ExcelUtils;
 import com.utils.ExtentReportManager;
 
-import dev.failsafe.internal.util.Assert;
-
 public class RegistrationTest extends BaseClass {
 
 	private static PageObjectManager pom;
@@ -20,36 +18,49 @@ public class RegistrationTest extends BaseClass {
 		try {
 			pom = new PageObjectManager(driver);
 
-			// WebElement emailid = pom.getRegpage().getEmailField();
-			// setText(emailid, "lakshmi@xooper.com");
+			ExtentReportManager.log(Status.INFO, "Starting registration test");
 
-			ExtentReportManager.log(Status.INFO, "Entering fullname");
+			waitForElementVisibility(pom.getRegpage().getFullNameField());
 			setText(pom.getRegpage().getFullNameField(), fullname);
+			ExtentReportManager.log(Status.PASS, "Fullname entered successfully: " + fullname);
 
-			ExtentReportManager.log(Status.INFO, "Entering email id");
+			waitForElementVisibility(pom.getRegpage().getEmailField());
 			setText(pom.getRegpage().getEmailField(), email);
+			ExtentReportManager.log(Status.PASS, "Email entered successfully: " + email);
 
-			ExtentReportManager.log(Status.INFO, "Entering company name");
+			waitForElementVisibility(pom.getRegpage().getCompanyNameField());
 			setText(pom.getRegpage().getCompanyNameField(), companyname);
+			ExtentReportManager.log(Status.PASS, "Company name entered successfully: " + companyname);
 
-			ExtentReportManager.log(Status.INFO, "Entering phone number");
+			waitForElementVisibility(pom.getRegpage().getPhoneNoField());
 			setText(pom.getRegpage().getPhoneNoField(), phone);
+			ExtentReportManager.log(Status.PASS, "Phone number entered successfully: " + phone);
 
-			ExtentReportManager.log(Status.INFO, "Entering password");
+			waitForElementVisibility(pom.getRegpage().getPasswordField());
 			setText(pom.getRegpage().getPasswordField(), password);
+			ExtentReportManager.log(Status.PASS, "Password entered successfully");
 
-			ExtentReportManager.log(Status.INFO, "Entering confirmation password");
+			waitForElementVisibility(pom.getRegpage().getConfirmPasswordField());
 			setText(pom.getRegpage().getConfirmPasswordField(), confirmpassword);
+			ExtentReportManager.log(Status.PASS, "Confirm password entered successfully");
 
-			ExtentReportManager.log(Status.INFO, "Clicking registration submit button");
+			waitForElementToBeClickable(pom.getRegpage().getSubmitButton());
 			clickElement(pom.getRegpage().getSubmitButton());
+			ExtentReportManager.log(Status.INFO, "Clicked on registration submit button");
 
-			ExtentReportManager.log(Status.INFO, "Verifying registration results");
-			Assert.isTrue(getTextFromElement(pom.getRegpage().getSuccessMessage()).contains("Registration successful"),
-					"Registration failed.");
+			waitForElementVisibility(pom.getRegpage().getSuccessMessage());
+			String successMessage = getTextFromElement(pom.getRegpage().getSuccessMessage());
+
+			if (successMessage.contains("Registration successful")) {
+				ExtentReportManager.log(Status.PASS, "Registration completed successfully.");
+			} else {
+				ExtentReportManager.log(Status.FAIL, "Registration failed. Message displayed: " + successMessage);
+				throw new RuntimeException("Registration failed. Expected success message not found.");
+			}
 
 		} catch (Exception e) {
 
+			ExtentReportManager.log(Status.FAIL, "Registration test failed: " + e.getMessage());
 			e.printStackTrace();
 			throw new RuntimeException("Registration test failed.", e);
 		}
@@ -58,8 +69,31 @@ public class RegistrationTest extends BaseClass {
 	@DataProvider(name = "registrationData")
 	public Object[][] getData() {
 
-		ExtentReportManager.log(Status.INFO, "Passing different set of registration data with excel");
-		return ExcelUtils.getTestData("registrationexcelfilepath", "sheet1");
+		ExtentReportManager.log(Status.INFO, "Fetching registration test data from Excel");
+
+		String excelFilePath = "registrationexcelfilepath";
+		String sheetName = "sheet1";
+
+		Object[][] testData = null;
+
+		try {
+			testData = ExcelUtils.getTestData(excelFilePath, sheetName);
+
+			if (testData == null || testData.length == 0) {
+				ExtentReportManager.log(Status.FAIL,
+						"No test data found in Excel: " + excelFilePath + ", Sheet: " + sheetName);
+				throw new RuntimeException("Excel data is empty or not found.");
+			}
+
+			ExtentReportManager.log(Status.PASS,
+					"Successfully fetched " + testData.length + " sets of registration data from Excel");
+
+		} catch (Exception e) {
+			ExtentReportManager.log(Status.FAIL, "Error fetching test data from Excel: " + e.getMessage());
+			throw new RuntimeException("Failed to fetch registration data.", e);
+		}
+
+		return testData;
 	}
 
 }

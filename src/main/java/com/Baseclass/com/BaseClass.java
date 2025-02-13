@@ -57,74 +57,67 @@ public class BaseClass extends FrameworkConstants {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public static WebDriver getDriver(String browserName) throws Exception {
-
 		try {
 			switch (browserName.toLowerCase()) {
 			case "chrome":
 				WebDriverManager.chromedriver().setup();
 				driver = new ChromeDriver();
+				ExtentReportManager.log(Status.INFO, "Chrome browser initialized successfully.");
 				break;
 			case "firefox":
 				WebDriverManager.firefoxdriver().setup();
 				driver = new FirefoxDriver();
+				ExtentReportManager.log(Status.INFO, "Firefox browser initialized successfully.");
 				break;
 			case "edge":
 				WebDriverManager.edgedriver().setup();
 				driver = new EdgeDriver();
+				ExtentReportManager.log(Status.INFO, "Edge browser initialized successfully.");
 				break;
 			default:
 				throw new Exception("Invalid Browser name Entered: " + browserName);
-
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
+			driver.manage().window().maximize();
+			ExtentReportManager.log(Status.INFO, "Browser window maximized.");
 
+			return driver;
+		} catch (Exception e) {
+			ExtentReportManager.log(Status.FAIL,
+					"Failed to initialize WebDriver for browser: " + browserName + " | Error: " + e.getMessage());
+			e.printStackTrace();
 			throw new Exception("Failed to initialize WebDriver for browser: " + browserName, e);
 		}
-
-		driver.manage().window().maximize();
-
-		return driver;
-
 	}
 
 	public static void navigateGetUrl(String url) throws Exception {
-
 		try {
-
 			driver.get(url);
-
+			ExtentReportManager.log(Status.INFO, "Navigated to URL: " + url);
 		} catch (Exception e) {
-
 			String errorMessage = "Failed to navigate to URL: " + url + ". " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new Exception(errorMessage, e);
 		}
-
 	}
 
 	public static void setText(WebElement element, String value) throws Exception {
-
 		waitForElementVisibility(element);
 
 		try {
-
 			element.clear();
-
 			element.sendKeys(value);
-
+			ExtentReportManager.log(Status.INFO, "Set text '" + value + "' in element: " + element);
 		} catch (Exception e) {
-
 			String errorMessage = "Failed to set text to element: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new Exception(errorMessage, e);
 		}
-
 	}
 
 	public static void waitForElementVisibility(WebElement element) {
@@ -132,12 +125,14 @@ public class BaseClass extends FrameworkConstants {
 		try {
 
 			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
-
 			wait.until(ExpectedConditions.visibilityOf(element));
+
+			ExtentReportManager.log(Status.INFO, "Element is visible: " + element);
 
 		} catch (Exception e) {
 			String errorMessage = "Element not visible within timeout: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -149,20 +144,27 @@ public class BaseClass extends FrameworkConstants {
 			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
 			wait.until(ExpectedConditions.elementToBeClickable(element));
 
+			ExtentReportManager.log(Status.INFO, "Element is clickable: " + element);
+
 		} catch (Exception e) {
 			String errorMessage = "Element is not clickable within timeout: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
 
-	public static void waitForElementToBePresent(WebElement element) {
+	public static void waitForElementToBePresent(By locator) {
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
-			wait.until(ExpectedConditions.presenceOfElementLocated((By) element));
+			wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+
+			ExtentReportManager.log(Status.INFO, "Element is present: " + locator);
+
 		} catch (Exception e) {
 			String errorMessage = "Element not found within timeout: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -174,27 +176,29 @@ public class BaseClass extends FrameworkConstants {
 			waitForElementToBeClickable(element);
 
 			element.click();
-
+			ExtentReportManager.log(Status.PASS, "Clicked on element: " + element.toString());
 		} catch (Exception e) {
 
 			String errorMessage = "Failed to click on element: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
-
 	}
 
 	public static String getTextFromElement(WebElement element) {
-
 		try {
+			waitForElementVisibility(element); // Ensure the element is visible
+			String text = element.getText();
 
-			waitForElementVisibility(element);
-			return element.getText();
+			ExtentReportManager.log(Status.PASS, "Retrieved text from element: '" + text + "'");
+
+			return text;
 
 		} catch (Exception e) {
-
 			String errorMessage = "Failed to get text from element: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -205,97 +209,113 @@ public class BaseClass extends FrameworkConstants {
 			waitForElementVisibility(element);
 			String attributeValue = element.getDomAttribute(attributeName);
 			if (attributeValue != null) {
+				ExtentReportManager.log(Status.PASS,
+						"Retrieved attribute '" + attributeName + "' value: '" + attributeValue + "'");
 				return attributeValue;
 			} else {
-				System.out.println("Attribute '" + attributeName + "' not found on the element.");
+				String warningMessage = "Attribute '" + attributeName + "' not found on the element.";
+				System.out.println(warningMessage);
+
+				ExtentReportManager.log(Status.WARNING, warningMessage);
 				return null;
 			}
 		} catch (Exception e) {
 			String errorMessage = "Failed to get attribute '" + attributeName + "' from element: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
 
 	public static boolean takeScreenshot(String screenShotPath) throws IOException {
 
+		if (driver == null) {
+			System.err.println("Driver is null. Cannot take a screenshot.");
+			return false;
+		}
+
 		try {
 			TakesScreenshot ts = (TakesScreenshot) driver;
 			File screenshotAs = ts.getScreenshotAs(OutputType.FILE);
 			File saveFile = new File(screenShotPath);
+
+			// Ensure parent directories exist
+			saveFile.getParentFile().mkdirs();
+
 			FileUtils.copyFile(screenshotAs, saveFile);
 			System.out.println("Screenshot saved to: " + screenShotPath);
 
-		} catch (Exception e) {
+			if (ExtentReportManager.test != null) {
+				ExtentReportManager.test.addScreenCaptureFromPath(screenShotPath);
+				ExtentReportManager.log(Status.INFO, "Screenshot captured: " + screenShotPath);
+			}
 
+			return true; // Return true on success
+		} catch (Exception e) {
 			String errorMessage = "Failed to take screenshot: " + e.getMessage();
 			System.err.println(errorMessage);
 			throw new IOException(errorMessage, e);
 		}
-		return false;
 	}
 
 	public static void closeCurrentBrowser(ITestResult result, String screenShotPath) {
-
 		try {
-
 			if (result.getStatus() == ITestResult.FAILURE) {
-				// Capture screenshot on test failure
+				String failureMessage = "Test Failed: "
+						+ (result.getThrowable() != null ? result.getThrowable().getMessage() : "Unknown error");
 
-				// TakesScreenshot()
-				// String screenshotPath = ScreenshotUtils.captureScreenshot(driver,
-				// result.getMethod().getMethodName());
+				ExtentReportManager.log(Status.FAIL, failureMessage);
 
-				// Attach screenshot to the Extent Report
-				if (takeScreenshot(screenShotPath)) {
-					ExtentReportManager.log(Status.FAIL, "Test Failed: " + result.getThrowable());
+				// Take screenshot only if path is valid
+				if (screenShotPath != null && !screenShotPath.isEmpty() && takeScreenshot(screenShotPath)) {
 					ExtentReportManager.test.addScreenCaptureFromPath(screenShotPath);
-				} else {
-					ExtentReportManager.log(Status.FAIL, "Test Failed: " + result.getThrowable());
 				}
 			} else if (result.getStatus() == ITestResult.SUCCESS) {
 				ExtentReportManager.log(Status.PASS, "Test Passed");
 			} else {
 				ExtentReportManager.log(Status.SKIP, "Test Skipped");
 			}
-
-			if (driver != null) {
-				driver.close();
-			}
-
 		} catch (Exception e) {
-
 			String errorMessage = "Failed to close the current browser: " + e.getMessage();
 			System.err.println(errorMessage);
 			throw new RuntimeException(errorMessage, e);
+		} finally {
+			// Ensure the driver is closed
+			if (driver != null) {
+				driver.close();
+			}
 		}
 	}
 
 	public static void closeAllBrowsers(ITestResult result, String screenShotPath) {
-
 		try {
 			if (result.getStatus() == ITestResult.FAILURE) {
-				// Capture screenshot on test failure
-				if (takeScreenshot(screenShotPath)) {
-					ExtentReportManager.log(Status.FAIL, "Test Failed: " + result.getThrowable());
+				// Capture screenshot only if the path is valid
+				boolean screenshotTaken = (screenShotPath != null && !screenShotPath.isEmpty())
+						&& takeScreenshot(screenShotPath);
+
+				String failureMessage = "Test Failed: "
+						+ (result.getThrowable() != null ? result.getThrowable().getMessage() : "Unknown error");
+
+				ExtentReportManager.log(Status.FAIL, failureMessage);
+
+				if (screenshotTaken) {
 					ExtentReportManager.test.addScreenCaptureFromPath(screenShotPath);
-				} else {
-					ExtentReportManager.log(Status.FAIL, "Test Failed: " + result.getThrowable());
 				}
 			} else if (result.getStatus() == ITestResult.SUCCESS) {
 				ExtentReportManager.log(Status.PASS, "Test Passed");
 			} else {
 				ExtentReportManager.log(Status.SKIP, "Test Skipped");
 			}
-			if (driver != null) {
-				driver.quit();
-			}
-
 		} catch (Exception e) {
-
 			String errorMessage = "Failed to close all browsers: " + e.getMessage();
 			System.err.println(errorMessage);
 			throw new RuntimeException(errorMessage, e);
+		} finally {
+			// Ensure the driver is closed
+			if (driver != null) {
+				driver.quit();
+			}
 		}
 	}
 
@@ -306,13 +326,15 @@ public class BaseClass extends FrameworkConstants {
 
 			ac = new Actions(driver);
 			ac.click(element).perform();
+			ExtentReportManager.log(Status.PASS,
+					"Successfully performed left-click on the element: " + element.toString());
 
 		} catch (Exception e) {
-			String errorMessage = "Failed to click on element: " + e.getMessage();
+			String errorMessage = "Failed to perform lefy click on element: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
-
 	}
 
 	public static void actionRightClick(WebElement element) {
@@ -322,14 +344,16 @@ public class BaseClass extends FrameworkConstants {
 
 			ac = new Actions(driver);
 			ac.contextClick(element).perform();
+			ExtentReportManager.log(Status.PASS,
+					"Successfully performed right-click on the element: " + element.toString());
 
 		} catch (Exception e) {
 
-			String errorMessage = "Failed to right-click on element: " + e.getMessage();
+			String errorMessage = "Failed to perform right-click on element: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
-
 	}
 
 	public static void actionDoubleClick(WebElement element) {
@@ -339,14 +363,16 @@ public class BaseClass extends FrameworkConstants {
 
 			ac = new Actions(driver);
 			ac.doubleClick(element).perform();
+			ExtentReportManager.log(Status.PASS,
+					"Successfully performed double-click on the element: " + element.toString());
 
 		} catch (Exception e) {
 
-			String errorMessage = "Failed to double-click on element: " + e.getMessage();
+			String errorMessage = "Failed to perform double-click on element: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
-
 	}
 
 	public static void actionMoveToElement(WebElement element) {
@@ -357,11 +383,12 @@ public class BaseClass extends FrameworkConstants {
 
 			ac = new Actions(driver);
 			ac.moveToElement(element).perform();
-
+			ExtentReportManager.log(Status.PASS, "Successfully moved to the element: " + element.toString());
 		} catch (Exception e) {
 
 			String errorMessage = "Failed to move to the element: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -374,11 +401,14 @@ public class BaseClass extends FrameworkConstants {
 
 			ac = new Actions(driver);
 			ac.dragAndDrop(sourceElement, targetElement).perform();
+			ExtentReportManager.log(Status.PASS, "Successfully dragged element: " + sourceElement.toString()
+					+ " and dropped it on: " + targetElement.toString());
 
 		} catch (Exception e) {
 
 			String errorMessage = "Failed to drag and drop element: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -392,22 +422,28 @@ public class BaseClass extends FrameworkConstants {
 			switch (selectionType.toLowerCase()) {
 			case "index":
 				sc.selectByIndex(Integer.parseInt(value));
+				ExtentReportManager.log(Status.PASS, "Selected option by index: " + value);
 				break;
 			case "value":
 				sc.selectByValue(value);
+				ExtentReportManager.log(Status.PASS, "Selected option by value: " + value);
 				break;
 			case "text":
 				sc.selectByVisibleText(value);
+				ExtentReportManager.log(Status.PASS, "Selected option by visible text: " + value);
 				break;
 			default:
-				throw new IllegalArgumentException(
-						"Invalid selection type: " + selectionType + ". Expected 'index', 'value', or 'text'.");
+				String invalidMessage = "Invalid selection type: " + selectionType
+						+ ". Expected 'index', 'value', or 'text'.";
+				ExtentReportManager.log(Status.FAIL, invalidMessage);
+				throw new IllegalArgumentException(invalidMessage);
 			}
 
 		} catch (Exception e) {
 
 			String errorMessage = "Failed to select option from dropdown: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -424,12 +460,12 @@ public class BaseClass extends FrameworkConstants {
 				optionTexts.add(option.getText());
 			}
 
+			ExtentReportManager.log(Status.PASS, "Dropdown options retrieved successfully: " + optionTexts);
 			return optionTexts;
-
 		} catch (Exception e) {
-
 			String errorMessage = "Failed to get options from dropdown: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -440,12 +476,16 @@ public class BaseClass extends FrameworkConstants {
 			waitForElementVisibility(element);
 			sc = new Select(element);
 			WebElement firstSelectedOption = sc.getFirstSelectedOption();
-			return firstSelectedOption.getText();
+			String selectedText = firstSelectedOption.getText();
+			ExtentReportManager.log(Status.PASS, "First selected option retrieved successfully: " + selectedText);
+
+			return selectedText;
 
 		} catch (Exception e) {
 
 			String errorMessage = "Failed to get the first selected option from the dropdown: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -456,15 +496,14 @@ public class BaseClass extends FrameworkConstants {
 			element.click();
 
 			Alert alert = driver.switchTo().alert();
+			String alertText = alert.getText();
 
 			if ("accept".equalsIgnoreCase(action)) {
-
 				alert.accept();
-
+				ExtentReportManager.log(Status.PASS, "Alert accepted successfully. Alert message: " + alertText);
 			} else if ("dismiss".equalsIgnoreCase(action)) {
-
 				alert.dismiss();
-
+				ExtentReportManager.log(Status.PASS, "Alert dismissed successfully. Alert message: " + alertText);
 			} else {
 
 				throw new IllegalArgumentException("Invalid action: " + action + ". Expected 'accept' or 'dismiss'.");
@@ -472,8 +511,9 @@ public class BaseClass extends FrameworkConstants {
 
 		} catch (Exception e) {
 
-			System.err.println("Error handling alert: " + e.getMessage());
-
+			String errorMessage = "Failed to handle alert: " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, "Error handling alert: " + e.getMessage());
 			throw new RuntimeException("Failed to handle alert.", e);
 		}
 	}
@@ -486,12 +526,15 @@ public class BaseClass extends FrameworkConstants {
 
 			Alert alert = driver.switchTo().alert();
 			alert.sendKeys(value);
+			ExtentReportManager.log(Status.INFO, "Entered text into alert: " + value);
 			alert.accept();
+			ExtentReportManager.log(Status.PASS, "Alert accepted successfully after entering text.");
 
 		} catch (Exception e) {
 
 			String errorMessage = "Failed to send keys to alert: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, "Error while sending keys to alert: " + e.getMessage());
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -499,12 +542,19 @@ public class BaseClass extends FrameworkConstants {
 	public static boolean isElementDisplayed(WebElement element) {
 
 		try {
-
-			return element.isDisplayed();
-
+			boolean isDisplayed = element.isDisplayed();
+			if (isDisplayed) {
+				ExtentReportManager.log(Status.PASS, "Element is displayed: " + element.toString());
+			} else {
+				ExtentReportManager.log(Status.WARNING, "Element is not displayed: " + element.toString());
+			}
+			return isDisplayed;
 		} catch (Exception e) {
 
-			System.err.println("Error checking element visibility: " + e.getMessage());
+			String errorMessage = "Error checking element visibility: " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, "Failed to check element visibility: " + e.getMessage());
+
 			return false;
 		}
 	}
@@ -512,12 +562,21 @@ public class BaseClass extends FrameworkConstants {
 	public static boolean isElementSelected(WebElement element) {
 
 		try {
+			boolean isSelected = element.isSelected();
 
-			return element.isSelected();
+			if (isSelected) {
+				ExtentReportManager.log(Status.PASS, "Element is selected: " + element.toString());
+			} else {
+				ExtentReportManager.log(Status.WARNING, "Element is not selected: " + element.toString());
+			}
+			return isSelected;
 
 		} catch (Exception e) {
 
-			System.err.println("Error checking element selection status: " + e.getMessage());
+			String errorMessage = "Error checking element selection status: " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, "Failed to check element selection status: " + e.getMessage());
+
 			return false;
 		}
 	}
@@ -525,12 +584,21 @@ public class BaseClass extends FrameworkConstants {
 	public static boolean isElementEnabled(WebElement element) {
 
 		try {
+			boolean isEnabled = element.isEnabled();
 
-			return element.isEnabled();
+			if (isEnabled) {
+				ExtentReportManager.log(Status.PASS, "Element is enabled: " + element.toString());
+			} else {
+				ExtentReportManager.log(Status.WARNING, "Element is disabled: " + element.toString());
+			}
+			return isEnabled;
 
 		} catch (Exception e) {
 
-			System.err.println("Error checking element enabled status: " + e.getMessage());
+			String errorMessage = "Error checking element enabled status: " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, "Failed to check element enabled status: " + e.getMessage());
+
 			return false;
 		}
 	}
@@ -547,16 +615,22 @@ public class BaseClass extends FrameworkConstants {
 
 				if (driver.getTitle().equals(windowTitle)) {
 
+					ExtentReportManager.log(Status.PASS, "Switched to window with title: " + windowTitle);
 					return true;
 				}
 			}
 
+			ExtentReportManager.log(Status.FAIL, "No window found with title: " + windowTitle);
+			return false;
+
 		} catch (NoSuchWindowException e) {
 
-			System.err.println("No window found with title: " + windowTitle + ". " + e.getMessage());
+			String errorMessage = "No window found with title: " + windowTitle + ". " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
+
 			return false;
 		}
-		return false;
 	}
 
 	public static boolean swithToWindowByIndex(int index) {
@@ -570,14 +644,20 @@ public class BaseClass extends FrameworkConstants {
 
 				String windowHandle = windowHandlesList.get(index);
 				driver.switchTo().window(windowHandle);
+				ExtentReportManager.log(Status.PASS, "Switched to window at index: " + index);
 				return true;
+			} else {
+				ExtentReportManager.log(Status.FAIL, "Invalid window index: " + index);
+				return false;
 			}
 
 		} catch (NoSuchWindowException e) {
-			System.err.println("No window found at the specified index: " + index + ". " + e.getMessage());
+			String errorMessage = "No window found at the specified index: " + index + ". " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
+
 			return false;
 		}
-		return false;
 	}
 
 	public static void closeCurrentWindowAndSwitchToMain() {
@@ -589,6 +669,7 @@ public class BaseClass extends FrameworkConstants {
 
 			if (windowHandles.size() > 1) {
 				driver.close();
+				ExtentReportManager.log(Status.INFO, "Closed the current window: " + currentWindow);
 
 				Iterator<String> iterator = windowHandles.iterator();
 				String mainWindowHandle = null;
@@ -600,18 +681,24 @@ public class BaseClass extends FrameworkConstants {
 						break;
 					}
 				}
-
 				if (mainWindowHandle != null) {
 					driver.switchTo().window(mainWindowHandle);
+					ExtentReportManager.log(Status.PASS, "Switched to main window: " + mainWindowHandle);
 				} else {
-					System.err.println("No other windows found to switch to.");
+					String errorMessage = "No other windows found to switch to.";
+					System.err.println(errorMessage);
+					ExtentReportManager.log(Status.FAIL, errorMessage);
 				}
 			} else {
-				System.err.println("Only one window is open. Cannot switch to another.");
+				String errorMessage = "Only one window is open. Cannot switch to another.";
+				System.err.println(errorMessage);
+				ExtentReportManager.log(Status.FAIL, errorMessage);
 			}
 
 		} catch (NoSuchWindowException e) {
-			System.err.println("Error switching to main window: " + e.getMessage());
+			String errorMessage = "Error switching to main window: " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException("Failed to switch to main window.", e);
 		}
 	}
@@ -621,11 +708,15 @@ public class BaseClass extends FrameworkConstants {
 
 			driver.switchTo().frame(index);
 
+			String successMessage = "Switched to iframe with index: " + index;
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
 			return true;
-
 		} catch (NoSuchFrameException e) {
 
-			System.out.println("Iframe with index " + index + " not found.");
+			String errorMessage = "Iframe with index " + index + " not found. " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 
 			return false;
 		}
@@ -637,11 +728,16 @@ public class BaseClass extends FrameworkConstants {
 
 			driver.switchTo().frame(nameOrId);
 
+			String successMessage = "Switched to iframe with name or ID: " + nameOrId;
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
 			return true;
 
 		} catch (NoSuchFrameException e) {
 
-			System.out.println("Iframe with name or ID '" + nameOrId + "' not found.");
+			String errorMessage = "Iframe with name or ID '" + nameOrId + "' not found. " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 
 			return false;
 		}
@@ -652,12 +748,16 @@ public class BaseClass extends FrameworkConstants {
 		try {
 			driver.switchTo().defaultContent();
 
-		} catch (NoSuchFrameException e) {
+			String successMessage = "Switched to default content successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
 
-			System.err.println("Error switching to default content: " + e.getMessage());
+		} catch (NoSuchFrameException e) {
+			String errorMessage = "Error switching to default content: " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException("Failed to switch to default content.", e);
 		}
-
 	}
 
 	public static void switchToParentFrame() {
@@ -665,12 +765,16 @@ public class BaseClass extends FrameworkConstants {
 		try {
 			driver.switchTo().parentFrame();
 
-		} catch (NoSuchFrameException e) {
+			String successMessage = "Switched to parent frame successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
 
-			System.err.println("Error switching to parent frame: " + e.getMessage());
+		} catch (NoSuchFrameException e) {
+			String errorMessage = "Error switching to parent frame: " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException("Failed to switch to parent frame.", e);
 		}
-
 	}
 
 	public static void pressEnter() {
@@ -680,8 +784,14 @@ public class BaseClass extends FrameworkConstants {
 			robot.keyPress(KeyEvent.VK_ENTER);
 			robot.keyRelease(KeyEvent.VK_ENTER);
 
+			String successMessage = "Pressed Enter key successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
+
 		} catch (AWTException e) {
-			System.err.println("Failed to press Enter key: " + e.getMessage());
+			String errorMessage = "Failed to press Enter key: " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException("Failed to press Enter key using Robot class.", e);
 		}
 	}
@@ -693,8 +803,14 @@ public class BaseClass extends FrameworkConstants {
 			robot.keyPress(KeyEvent.VK_TAB);
 			robot.keyRelease(KeyEvent.VK_TAB);
 
+			String successMessage = "Pressed Tab key successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
+
 		} catch (AWTException e) {
-			System.err.println("Failed to press Tab key: " + e.getMessage());
+			String errorMessage = "Failed to press Tab key: " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException("Failed to press Tab key using Robot class.", e);
 		}
 	}
@@ -705,8 +821,14 @@ public class BaseClass extends FrameworkConstants {
 			Robot robot = new Robot();
 			robot.keyPress(keyCode);
 
+			String successMessage = "Pressed key with keyCode: " + keyCode + " successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
+
 		} catch (AWTException e) {
-			System.err.println("Failed to press key: " + keyCode + ". " + e.getMessage());
+			String errorMessage = "Failed to press key with keyCode: " + keyCode + ". " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException("Failed to press key using Robot class.", e);
 		}
 	}
@@ -717,9 +839,15 @@ public class BaseClass extends FrameworkConstants {
 			Robot robot = new Robot();
 			robot.keyRelease(keyCode);
 
+			String successMessage = "Released key with keyCode: " + keyCode + " successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
+
 		} catch (AWTException e) {
 
-			System.err.println("Failed to release key: " + keyCode + ". " + e.getMessage());
+			String errorMessage = "Failed to release key with keyCode: " + keyCode + ". " + e.getMessage();
+			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException("Failed to release key using Robot class.", e);
 		}
 	}
@@ -729,11 +857,14 @@ public class BaseClass extends FrameworkConstants {
 		try {
 
 			driver.navigate().to(url);
+			String successMessage = "Navigated to URL: " + url + " successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
 
 		} catch (Exception e) {
-
 			String errorMessage = "Failed to navigate to URL: " + url + ". " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -743,11 +874,15 @@ public class BaseClass extends FrameworkConstants {
 		try {
 
 			driver.navigate().back();
+			String successMessage = "Navigated back successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
 
 		} catch (Exception e) {
 
 			String errorMessage = "Failed to navigate back: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -758,10 +893,15 @@ public class BaseClass extends FrameworkConstants {
 
 			driver.navigate().forward();
 
+			String successMessage = "Navigated forward successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
+
 		} catch (Exception e) {
 
 			String errorMessage = "Failed to navigate forward: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -771,11 +911,15 @@ public class BaseClass extends FrameworkConstants {
 		try {
 
 			driver.navigate().refresh();
+			String successMessage = "Page refreshed successfully.";
+			System.out.println(successMessage);
+			ExtentReportManager.log(Status.PASS, successMessage);
 
 		} catch (Exception e) {
 
 			String errorMessage = "Failed to refresh the page: " + e.getMessage();
 			System.err.println(errorMessage);
+			ExtentReportManager.log(Status.FAIL, errorMessage);
 			throw new RuntimeException(errorMessage, e);
 		}
 	}
@@ -783,18 +927,24 @@ public class BaseClass extends FrameworkConstants {
 	public static void handleSpecificCheckBoxes(List<WebElement> checkBoxList, Set<String> valuesToSelect,
 			boolean select) {
 		if (checkBoxList == null || valuesToSelect == null) {
-			throw new IllegalArgumentException("Checkbox list or values to select cannot be null.");
+			String errorMessage = "Checkbox list or values to select cannot be null.";
+			ExtentReportManager.log(Status.FAIL, errorMessage);
+			throw new IllegalArgumentException(errorMessage);
 		}
 
 		for (WebElement checkbox : checkBoxList) {
 			if (checkbox == null) {
-				System.err.println("Null checkbox encountered. Skipping...");
+				String warningMessage = "Null checkbox encountered. Skipping...";
+				System.err.println(warningMessage);
+				ExtentReportManager.log(Status.WARNING, warningMessage);
 				continue;
 			}
 
 			String checkboxValue = checkbox.getDomProperty("value");
 			if (checkboxValue == null || checkboxValue.isEmpty()) {
-				System.err.println("Checkbox with missing or empty 'value' attribute encountered. Skipping...");
+				String warningMessage = "Checkbox with missing or empty 'value' attribute encountered. Skipping...";
+				System.err.println(warningMessage);
+				ExtentReportManager.log(Status.WARNING, warningMessage);
 				continue;
 			}
 
@@ -802,16 +952,22 @@ public class BaseClass extends FrameworkConstants {
 				try {
 					if ((select && !checkbox.isSelected()) || (!select && checkbox.isSelected())) {
 						checkbox.click();
-						System.out.println("Checkbox " + (select ? "selected" : "deselected") + ": " + checkboxValue);
+						String successMessage = "Checkbox " + (select ? "selected" : "deselected") + ": "
+								+ checkboxValue;
+						System.out.println(successMessage);
+						ExtentReportManager.log(Status.PASS, successMessage);
 					} else {
-						System.out.println(
-								"Checkbox already " + (select ? "selected" : "deselected") + ": " + checkboxValue);
+						String infoMessage = "Checkbox already " + (select ? "selected" : "deselected") + ": "
+								+ checkboxValue;
+						System.out.println(infoMessage);
+						ExtentReportManager.log(Status.INFO, infoMessage);
 					}
 				} catch (Exception e) {
-					System.err.println("Error interacting with checkbox (" + checkboxValue + "): " + e.getMessage());
+					String errorMessage = "Error interacting with checkbox (" + checkboxValue + "): " + e.getMessage();
+					System.err.println(errorMessage);
+					ExtentReportManager.log(Status.FAIL, errorMessage);
 				}
 			}
 		}
 	}
-
 }
