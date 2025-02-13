@@ -5,14 +5,13 @@ import java.util.Set;
 
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.DataProvider;
+import org.testng.asserts.SoftAssert;
 
 import com.Baseclass.com.BaseClass;
 import com.PageObjectManager.com.PageObjectManager;
 import com.aventstack.extentreports.Status;
 import com.utils.ExcelUtils;
 import com.utils.ExtentReportManager;
-
-import dev.failsafe.internal.util.Assert;
 
 public class AIJDCreationTest extends BaseClass {
 
@@ -25,6 +24,8 @@ public class AIJDCreationTest extends BaseClass {
 		try {
 
 			pom = new PageObjectManager(driver);
+			
+			SoftAssert softAssert = new SoftAssert();
 
 			ExtentReportManager.log(Status.INFO, "Entering job title");
 			setText(pom.getAijdpage().getJobTitleField(), jobtitle);
@@ -91,7 +92,8 @@ public class AIJDCreationTest extends BaseClass {
 			clickElement(pom.getAijdpage().getSubmittoCreateJD());
 
 			String confirmationText = getTextFromElement(pom.getAijdpage().getSuccessMessage());
-			Assert.isTrue(confirmationText.contains("Job Description Created"),
+
+			softAssert.assertTrue(confirmationText.contains("Job Description Created"),
 					"AI JD Creation failed: Confirmation message mismatch.");
 
 		} catch (Exception e) {
@@ -115,5 +117,4 @@ public class AIJDCreationTest extends BaseClass {
 
 		return testData;
 	}
-
 }

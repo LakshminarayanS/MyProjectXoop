@@ -267,7 +267,7 @@ public class BaseClass extends FrameworkConstants {
 				ExtentReportManager.log(Status.FAIL, failureMessage);
 
 				// Take screenshot only if path is valid
-				if (screenShotPath != null && !screenShotPath.isEmpty() && takeScreenshot(screenShotPath)) {
+				if (screenShotPath != null && !screenShotPath.trim().isEmpty() && takeScreenshot(screenShotPath)) {
 					ExtentReportManager.test.addScreenCaptureFromPath(screenShotPath);
 				}
 			} else if (result.getStatus() == ITestResult.SUCCESS) {
@@ -291,7 +291,7 @@ public class BaseClass extends FrameworkConstants {
 		try {
 			if (result.getStatus() == ITestResult.FAILURE) {
 				// Capture screenshot only if the path is valid
-				boolean screenshotTaken = (screenShotPath != null && !screenShotPath.isEmpty())
+				boolean screenshotTaken = (screenShotPath != null && !screenShotPath.trim().isEmpty())
 						&& takeScreenshot(screenShotPath);
 
 				String failureMessage = "Test Failed: "
@@ -941,7 +941,7 @@ public class BaseClass extends FrameworkConstants {
 			}
 
 			String checkboxValue = checkbox.getDomProperty("value");
-			if (checkboxValue == null || checkboxValue.isEmpty()) {
+			if (checkboxValue == null || checkboxValue.trim().isEmpty()) {
 				String warningMessage = "Checkbox with missing or empty 'value' attribute encountered. Skipping...";
 				System.err.println(warningMessage);
 				ExtentReportManager.log(Status.WARNING, warningMessage);

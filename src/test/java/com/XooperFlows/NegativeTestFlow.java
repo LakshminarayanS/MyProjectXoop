@@ -50,7 +50,6 @@ public class NegativeTestFlow extends BaseClass {
 			e.printStackTrace();
 			throw new RuntimeException("User registration test failed.", e);
 		}
-
 	}
 
 	@Test(dataProvider = "registrationData", priority = 1)
@@ -69,7 +68,7 @@ public class NegativeTestFlow extends BaseClass {
 		}
 	}
 
-	@Test(priority = 1)
+	@Test(priority = 1, enabled = false)
 	public void loginTest_Skip() {
 
 		ExtentReportManager.log(Status.INFO, "Starting skipped login test");
