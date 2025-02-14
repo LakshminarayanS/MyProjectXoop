@@ -24,7 +24,7 @@ public class AIJDCreationTest extends BaseClass {
 		try {
 
 			pom = new PageObjectManager(driver);
-			
+
 			SoftAssert softAssert = new SoftAssert();
 
 			ExtentReportManager.log(Status.INFO, "Entering job title");
@@ -106,9 +106,12 @@ public class AIJDCreationTest extends BaseClass {
 	@DataProvider(name = "AIJDCreationData")
 	public Object[][] getData() {
 
+		String excelFilePath = "AIJDexcelfilepath";
+		String sheetName = "sheet2";
+
 		ExtentReportManager.log(Status.INFO, "Fetching AI JD creation data from Excel");
 
-		Object[][] testData = ExcelUtils.getTestData("AIJDexcelfilepath", "sheet2");
+		Object[][] testData = ExcelUtils.getTestData(excelFilePath, sheetName);
 
 		if (testData == null || testData.length == 0) {
 			ExtentReportManager.log(Status.WARNING, "No data found in Excel for AI JD creation.");

@@ -3,6 +3,7 @@ package com.XooperFlows;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.Baseclass.com.BaseClass;
@@ -11,7 +12,9 @@ import com.Xooper.AIAPP.RegistrationTest;
 import com.Xooper.AIAPP.SignUpSignOutTest;
 import com.aventstack.extentreports.Status;
 import com.utils.ExtentReportManager;
+import com.utils.RetryTransformer;
 
+@Listeners({ RetryTransformer.class })
 public class HappyPathFlow extends BaseClass {
 
 	@BeforeClass
