@@ -111,7 +111,7 @@ public class AIJDCreationTest extends BaseClass {
 
 		ExtentReportManager.log(Status.INFO, "Fetching AI JD creation data from Excel");
 
-		Object[][] testData = ExcelUtils.getTestData(excelFilePath, sheetName);
+		Object[][] testData = ExcelUtils.readExcelData(excelFilePath, sheetName);
 
 		if (testData == null || testData.length == 0) {
 			ExtentReportManager.log(Status.WARNING, "No data found in Excel for AI JD creation.");

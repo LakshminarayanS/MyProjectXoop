@@ -28,6 +28,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITestResult;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
 import com.aventstack.extentreports.Status;
@@ -49,10 +50,11 @@ public class BaseClass extends FrameworkConstants {
 
 	private static Select sc;
 
+	@BeforeSuite
 	public static void setUpSuite() {
 		try {
 			extentReportManager = new ExtentReportManager();
-			ExtentReportManager.createInstance("test-output/ExtentReport.html"); // Report will store in test output
+			ExtentReportManager.createInstance();
 
 		} catch (Exception e) {
 			e.printStackTrace();

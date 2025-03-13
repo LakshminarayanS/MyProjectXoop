@@ -77,7 +77,7 @@ public class RegistrationTest extends BaseClass {
 		Object[][] testData = null;
 
 		try {
-			testData = ExcelUtils.getTestData(excelFilePath, sheetName);
+			testData = ExcelUtils.readExcelData(excelFilePath, sheetName);
 
 			if (testData == null || testData.length == 0) {
 				ExtentReportManager.log(Status.FAIL,
