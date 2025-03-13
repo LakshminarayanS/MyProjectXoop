@@ -23,13 +23,13 @@ public class ExtentReportManager {
 		}
 		return extent;
 	}
-
-	public static synchronized ExtentReports getInstance() {
-		if (extent == null) {
-			throw new IllegalStateException("ExtentReports instance is not initialized. Call createInstance() first.");
-		}
-		return extent;
-	}
+	
+    public static synchronized ExtentReports getInstance() {
+        if (extent == null) {
+            throw new IllegalStateException("ExtentReports instance is not initialized. Call createInstance() first.");
+        }
+        return extent;
+    }
 
 	public static void startTest(String testName) {
 		if (extent == null) {

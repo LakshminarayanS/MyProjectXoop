@@ -48,10 +48,10 @@ public class API_AIJDCreationTest {
 
 		ExtentReportManager.log(Status.INFO, "Request Body: " + requestBody.toString());
 
-//		RestAssured.baseURI = BASE_URL;
+		Response response = null;
 
 		while (attempt < maxRetries) {
-			Response response = given().baseUri(BASE_URL)
+			response = given().baseUri(BASE_URL)
 
 					.contentType(ContentType.JSON).body(requestBody.toString()).when().post();
 
@@ -83,8 +83,13 @@ public class API_AIJDCreationTest {
 			ExtentReportManager.log(Status.FAIL, "API request failed after " + maxRetries + " attempts.");
 			throw new AssertionError("API request failed after " + maxRetries + " attempts.");
 		}
-		// Assert.assertNotNull(response.getBody().asString());
-		// Assert.assertTrue(response.getBody().asString().contains("success"));
+
+		JSONObject jsonResponse = new JSONObject(response.getBody().asString());
+		org.testng.Assert.assertTrue(jsonResponse.has("retrieved_results"),
+				"Response does not contain expected 'retrieved_results'");
+
+//		org.testng.Assert.assertNotNull(response.getBody(),"Response body is null");
+//		org.testng.Assert.assertTrue(response.getBody().asString().contains("success"),"Response does not contain expected 'success'");
 
 		ExtentReportManager.log(Status.PASS, "API test passed for role: " + role);
 	}
