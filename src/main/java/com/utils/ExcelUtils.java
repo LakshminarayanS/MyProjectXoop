@@ -124,6 +124,12 @@ public class ExcelUtils {
 				}
 				data.add(nextLine);
 			}
+
+			if (data.isEmpty()) {
+				ExtentReportManager.log(Status.WARNING, "No test data found in CSV file: " + filePath);
+				throw new RuntimeException("CSV file contains no valid data.");
+			}
+
 		} catch (Exception e) {
 			throw new RuntimeException("Error reading CSV file: " + e.getMessage());
 		}

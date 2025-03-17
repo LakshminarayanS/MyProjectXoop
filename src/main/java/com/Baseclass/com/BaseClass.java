@@ -248,7 +248,7 @@ public class BaseClass extends FrameworkConstants {
 			System.out.println("Screenshot saved to: " + screenShotPath);
 
 			if (ExtentReportManager.test != null) {
-				ExtentReportManager.test.addScreenCaptureFromPath(screenShotPath);
+				ExtentReportManager.test.get().addScreenCaptureFromPath(screenShotPath);
 				ExtentReportManager.log(Status.INFO, "Screenshot captured: " + screenShotPath);
 			}
 
@@ -270,7 +270,7 @@ public class BaseClass extends FrameworkConstants {
 
 				// Take screenshot only if path is valid
 				if (screenShotPath != null && !screenShotPath.trim().isEmpty() && takeScreenshot(screenShotPath)) {
-					ExtentReportManager.test.addScreenCaptureFromPath(screenShotPath);
+					ExtentReportManager.test.get().addScreenCaptureFromPath(screenShotPath);
 				}
 			} else if (result.getStatus() == ITestResult.SUCCESS) {
 				ExtentReportManager.log(Status.PASS, "Test Passed");
@@ -302,7 +302,7 @@ public class BaseClass extends FrameworkConstants {
 				ExtentReportManager.log(Status.FAIL, failureMessage);
 
 				if (screenshotTaken) {
-					ExtentReportManager.test.addScreenCaptureFromPath(screenShotPath);
+					ExtentReportManager.test.get().addScreenCaptureFromPath(screenShotPath);
 				}
 			} else if (result.getStatus() == ITestResult.SUCCESS) {
 				ExtentReportManager.log(Status.PASS, "Test Passed");

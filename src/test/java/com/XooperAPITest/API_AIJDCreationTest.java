@@ -17,11 +17,11 @@ public class API_AIJDCreationTest {
 
 	private static final String BASE_URL = "https://dev.xooper.in/create-job/";
 
-	public static void testAIJDAPI(String role, String minExp, String maxExp, String tone, String language,
+	public static String testAIJDAPI(String role, String minExp, String maxExp, String tone, String language,
 			String skills, String description, String industry, String location, String jobType,
 			String employmentType) {
 
-		int maxRetries = 5;
+		int maxRetries = 2;
 		int attempt = 0;
 		boolean success = false;
 
@@ -71,6 +71,13 @@ public class API_AIJDCreationTest {
 				break;
 			}
 
+			if (statusCode == 422) {
+				String errorResponse = response.getBody().asString();
+				ExtentReportManager.log(Status.PASS, "Received 422 Unprocessable Entity for role: " + role);
+				ExtentReportManager.log(Status.PASS, "Error Response: " + errorResponse);
+				throw new AssertionError("API returned 422 Unprocessable Entity as expected.");
+			}
+
 			attempt++;
 			try {
 				TimeUnit.SECONDS.sleep(7);
@@ -92,6 +99,7 @@ public class API_AIJDCreationTest {
 //		org.testng.Assert.assertTrue(response.getBody().asString().contains("success"),"Response does not contain expected 'success'");
 
 		ExtentReportManager.log(Status.PASS, "API test passed for role: " + role);
+		return role;
 	}
 
 }

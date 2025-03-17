@@ -52,7 +52,7 @@ public class RetryTransformer implements IAnnotationTransformer {
 				ExtentReportManager.log(Status.FAIL, logMessage);
 				break;
 			default:
-				ExtentReportManager.test.log(Status.INFO, logMessage);
+				ExtentReportManager.test.get().log(Status.INFO, logMessage);
 				break;
 			}
 			System.out.println(logMessage);

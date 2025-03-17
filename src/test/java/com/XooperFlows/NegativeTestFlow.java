@@ -150,7 +150,7 @@ public class NegativeTestFlow extends BaseClass {
 				String screenshotPath = SCREENSHOT_DIR + "/" + result.getName() + ".png";
 				ExtentReportManager.log(Status.FAIL, "Test failed: " + result.getName());
 				ExtentReportManager.log(Status.FAIL, "Error: " + result.getThrowable().getMessage());
-				ExtentReportManager.test.addScreenCaptureFromPath(screenshotPath);
+				ExtentReportManager.test.get().addScreenCaptureFromPath(screenshotPath);
 			} else if (result.getStatus() == ITestResult.SUCCESS) {
 				ExtentReportManager.log(Status.PASS, "Test passed: " + result.getName());
 			} else if (result.getStatus() == ITestResult.SKIP) {

@@ -10,7 +10,7 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 
 public class ExtentReportManager {
 	private static ExtentReports extent;
-	public static ExtentTest test;
+	public static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
 
 	public static ExtentReports createInstance() {
 		if (extent == null) {
@@ -20,39 +20,43 @@ public class ExtentReportManager {
 			ExtentSparkReporter htmlReporter = new ExtentSparkReporter(reportPath);
 			extent = new ExtentReports();
 			extent.attachReporter(htmlReporter);
+			System.out.println("Extent Report initialized: " + reportPath);
 		}
 		return extent;
 	}
-	
-    public static synchronized ExtentReports getInstance() {
-        if (extent == null) {
-            throw new IllegalStateException("ExtentReports instance is not initialized. Call createInstance() first.");
-        }
-        return extent;
-    }
+
+	public static synchronized ExtentReports getInstance() {
+		if (extent == null) {
+			throw new IllegalStateException("ExtentReports instance is not initialized. Call createInstance() first.");
+		}
+		return extent;
+	}
 
 	public static void startTest(String testName) {
 		if (extent == null) {
 			throw new IllegalStateException("ExtentReports instance is not initialized. Call createInstance() first.");
 		}
-		test = extent.createTest(testName);
+		ExtentTest newTest = extent.createTest(testName);
+		test.set(newTest);
 	}
 
 	public static void log(Status status, String message) {
-		if (test == null) {
-			System.out.println("Warning: Extent Report not started. Skipping log: " + message);
+		ExtentTest currentTest = test.get();
+		if (currentTest == null) {
+			System.out.println("Warning: Test not started. Skipping log: " + message);
 			return;
 		}
-		test.log(status, message);
+		currentTest.log(status, message);
 	}
 
 	public static void log(Status status, String message, String screenShotPath) {
-		if (test == null) {
+		ExtentTest currentTest = test.get();
+		if (currentTest == null) {
 			throw new IllegalStateException("Test is not started. Call startTest() first.");
 		}
-		test.log(status, message);
+		currentTest.log(status, message);
 		try {
-			test.addScreenCaptureFromPath(screenShotPath);
+			currentTest.addScreenCaptureFromPath(screenShotPath);
 		} catch (Exception e) {
 			System.out.println("Error adding screenshot: " + e.getMessage());
 		}
@@ -62,7 +66,7 @@ public class ExtentReportManager {
 		log(Status.FAIL, message);
 		if (screenShotPath != null && !screenShotPath.isEmpty()) {
 			try {
-				test.addScreenCaptureFromPath(screenShotPath);
+				test.get().addScreenCaptureFromPath(screenShotPath);
 			} catch (Exception e) {
 				System.out.println("Error attaching screenshot: " + e.getMessage());
 			}
@@ -82,6 +86,8 @@ public class ExtentReportManager {
 		if (extent != null) {
 			extent.flush();
 			System.out.println("Extent Report generated successfully.");
+		} else {
+			System.out.println("Warning: No Extent Report instance found. Nothing to flush.");
 		}
 	}
 
