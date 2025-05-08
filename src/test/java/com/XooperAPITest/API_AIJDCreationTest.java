@@ -15,7 +15,7 @@ import io.restassured.response.Response;
 
 public class API_AIJDCreationTest {
 
-	private static final String BASE_URL = "https://dev.xooper.in/create-job/";
+	private static final String BASE_URL = "https://dev.xooper.in/creator/create-job/";
 
 	public static String testAIJDAPI(String role, String minExp, String maxExp, String tone, String language,
 			String skills, String description, String industry, String location, String jobType,
@@ -76,7 +76,7 @@ public class API_AIJDCreationTest {
 				ExtentReportManager.log(Status.PASS, "Received 422 Unprocessable Entity for role: " + role);
 				ExtentReportManager.log(Status.PASS, "Error Response: " + errorResponse);
 				throw new AssertionError("API returned 422 Unprocessable Entity as expected.");
-			}
+			} 
 
 			attempt++;
 			try {

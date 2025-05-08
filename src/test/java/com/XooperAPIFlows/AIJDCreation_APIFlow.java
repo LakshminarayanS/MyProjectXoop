@@ -43,7 +43,7 @@ public class AIJDCreation_APIFlow {
 
 	}
 
-	@Test(dataProvider = "InvalidAPIAIJDCreationData", expectedExceptions = RuntimeException.class, timeOut = 40000)
+	@Test(dataProvider = "InvalidAPIAIJDCreationData", expectedExceptions = AssertionError.class, timeOut = 40000)
 	public void AIJDwithInvalidExcelTestData(String role, String minExp, String maxExp, String tone, String language,
 			String skills, String description, String industry, String location, String jobType,
 			String employmentType) {
