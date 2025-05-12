@@ -1,96 +1,81 @@
 package com.XooperAPIFlows;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import static io.restassured.RestAssured.given;
 
+import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.XooperAPITest.API_AIJDCreationTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.Status;
-import com.utils.ExcelUtils;
+import com.constants.com.FrameworkConstants;
 import com.utils.ExtentReportManager;
 
-public class AIJDCreation_APIFlow {
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
+public class AIJDCreation_APIFlow extends FrameworkConstants {
+
+	private static final String JDCreator_BASE_URL = "https://dev.xooper.in/creator/create-job/";
+	public static String JOB_ID;
 
 	@BeforeSuite
 	public void setupReport() {
 		ExtentReportManager.createInstance();
 	}
 
-	@Test(dataProvider = "ValidAPIAIJDCreationData", timeOut = 40000)
-	public void AIJDwithExcelTestData(String role, String minExp, String maxExp, String tone, String language,
-			String skills, String description, String industry, String location, String jobType,
-			String employmentType) {
+	@Test
+	public static void AIJDCreatorTestData() {
+
 		try {
-			ExtentReportManager.startTest("AI JD Creation API Test - Valid Data - " + role);
-			ExtentReportManager.log(Status.INFO, "Testing AI JD API with valid data: " + role);
 
-			String apiResponse = API_AIJDCreationTest.testAIJDAPI(role, minExp, maxExp, tone, language, skills,
-					description, industry, location, jobType, employmentType);
+			ExtentReportManager.startTest("AI JD Creation API Test - Valid Data - " + JOB_ROLE);
+			ExtentReportManager.log(Status.INFO, "Testing AI JD Creation API with valid data for " + JOB_ROLE);
 
-			Assert.assertFalse(apiResponse.contains("Error"), "Unexpected error for valid input!");
-			ExtentReportManager.log(Status.PASS, "AI JD Creation test passed for valid data: " + role);
+			ExtentReportManager.log(Status.INFO, "Starting API test for: " + JOB_ROLE);
+
+			JSONObject requestBody = new JSONObject();
+			requestBody.put("role", JOB_ROLE);
+			requestBody.put("min_experience", MIN_EXPERIENCE);
+			requestBody.put("max_experience", MAX_EXPERIENCE);
+			requestBody.put("tone", TONE);
+			requestBody.put("language", LANGUAGE_PREFERENCE);
+			requestBody.put("skills", JOB_SKILLS);
+			requestBody.put("description", JOB_DESCRIPTION);
+			requestBody.put("industry", INDUSTRY_TYPE);
+			requestBody.put("location", JOB_LOCATION);
+			requestBody.put("job_type", JOB_TYPE);
+			requestBody.put("employment_type", EMPLOYEMENT_TYPE);
+
+			ExtentReportManager.log(Status.INFO, "Request Body: " + requestBody.toString());
+
+			Response response = given().baseUri(JDCreator_BASE_URL).contentType(ContentType.JSON)
+					.body(requestBody.toString()).when().post();
+
+			int statusCode = response.getStatusCode();
+
+			String responseBody = response.getBody().asString();
+			ExtentReportManager.log(Status.INFO, "Response Status Code: " + statusCode);
+			ExtentReportManager.log(Status.INFO, "Response Body: " + responseBody);
+			System.out.println("Response Body: " + responseBody);
+
+			String jobId = response.jsonPath().getString("job_id");
+			System.out.println("Extracted job_id = " + jobId);
+
+			JOB_ID = jobId;
+
+			JSONObject jsonResponse = new JSONObject(responseBody);
+			Assert.assertTrue(jsonResponse.has("retrieved_results"),
+					"Response does not contain expected 'retrieved_results'");
+
+			ExtentReportManager.log(Status.PASS, "API test passed for: " + JOB_ROLE);
+
 		} catch (Exception e) {
 			ExtentReportManager.log(Status.FAIL,
-					"AI JD Creation test failed for valid data: " + role + ". Error: " + e.getMessage());
+					"AI JD Creation test failed for valid data: " + JOB_ROLE + ". Error: " + e.getMessage());
 			throw new RuntimeException("Valid AIJD test failed", e);
-		}
-
-	}
-
-	@Test(dataProvider = "InvalidAPIAIJDCreationData", expectedExceptions = AssertionError.class, timeOut = 40000)
-	public void AIJDwithInvalidExcelTestData(String role, String minExp, String maxExp, String tone, String language,
-			String skills, String description, String industry, String location, String jobType,
-			String employmentType) {
-		System.out.println("Testing API with invalid data: " + role);
-		ExtentReportManager.startTest("AI JD Creation API Test - Invalid Data - " + role);
-		ExtentReportManager.log(Status.INFO, "Testing AI JD API with invalid data: " + role);
-
-		API_AIJDCreationTest.testAIJDAPI(role, minExp, maxExp, tone, language, skills, description, industry, location,
-				jobType, employmentType);
-
-		ExtentReportManager.log(Status.FAIL, "Test failed! API accepted invalid data: " + role);
-	}
-
-	@DataProvider(name = "ValidAPIAIJDCreationData")
-	public static Object[][] getData() {
-
-		String filePath = "C:\\Users\\LAKSHMINARAYANA\\MyProjectXoop\\src\\main\\resource\\excelTestData\\Testdata1(AIJDCreation_Data).csv";
-		String sheetName = "ValidAIJDCreation_Data";
-
-		if (!Files.exists(Paths.get(filePath))) {
-			throw new RuntimeException("Test data file not found: " + filePath);
-		}
-
-		if (filePath.endsWith(".csv")) {
-			return ExcelUtils.readCSVData(filePath);
-		} else if (filePath.endsWith(".xlsx")) {
-			return ExcelUtils.readExcelData(filePath, sheetName);
-		} else {
-			throw new RuntimeException("Unsupported file format: " + filePath);
-		}
-	}
-
-	@DataProvider(name = "InvalidAPIAIJDCreationData")
-	public static Object[][] invalidDataProvider() {
-		String filePath = "C:\\Users\\LAKSHMINARAYANA\\MyProjectXoop\\src\\main\\resource\\excelTestData\\TestData2_Invalid(Sheet1).csv";
-		String sheetName = "Sheet1";
-
-		if (!Files.exists(Paths.get(filePath))) {
-			throw new RuntimeException("Test data file not found: " + filePath);
-		}
-
-		if (filePath.endsWith(".csv")) {
-			return ExcelUtils.readCSVData(filePath);
-		} else if (filePath.endsWith(".xlsx")) {
-			return ExcelUtils.readExcelData(filePath, sheetName);
-		} else {
-			throw new RuntimeException("Unsupported file format: " + filePath);
 		}
 
 	}

@@ -104,15 +104,14 @@ public class HappyPathFlow extends BaseClass {
 
 		try {
 			ExtentReportManager.startTest("AI JD Creation Test");
-			ExtentReportManager.log(Status.INFO, "Starting AI JD Creation test with Job Title: " + JOB_TITLE);
+			ExtentReportManager.log(Status.INFO, "Starting AI JD Creation test with Job Title: " + JOB_ROLE);
 
-			AIJDCreationTest.testAIJDCreation(JOB_TITLE, JOB_SKILLS, JOB_LOCATION, JOB_TYPE, EMPLOYEMENT_TYPE,
-					EXPERIENCE_LEVEL, SALARY_LEVEL, LANGUAGE_PREFERENCE, TONE);
+			AIJDCreationTest.testAIJDCreation(CONFIRM_PASSWORD, JOB_SKILLS_RAW, JOB_LOCATION, COMPANY_NAME, EMPLOYEMENT_TYPE, MAX_EXPERIENCE, BROWSER_NAME, BASE_URL, TONE);
 
-			ExtentReportManager.log(Status.PASS, "AI JD Creation test passed successfully for Job Title: " + JOB_TITLE);
+			ExtentReportManager.log(Status.PASS, "AI JD Creation test passed successfully for Job Title: " + JOB_ROLE);
 		} catch (Exception e) {
 			ExtentReportManager.log(Status.FAIL,
-					"AI JD Creation test failed for Job Title: " + JOB_TITLE + ". Error: " + e.getMessage());
+					"AI JD Creation test failed for Job Title: " + JOB_ROLE + ". Error: " + e.getMessage());
 
 			e.printStackTrace();
 			throw new RuntimeException("AI JD Creation test failed.", e);

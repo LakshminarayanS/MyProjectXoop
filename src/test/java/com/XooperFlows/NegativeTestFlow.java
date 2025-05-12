@@ -106,14 +106,14 @@ public class NegativeTestFlow extends BaseClass {
 
 		try {
 			ExtentReportManager.startTest("AI JD Creation Test");
-			ExtentReportManager.log(Status.INFO, "Starting AI JD Creation test with Job Title: " + JOB_TITLE);
+			ExtentReportManager.log(Status.INFO, "Starting AI JD Creation test with Job Title: " + JOB_ROLE);
 
 			AIJDCreationTest.testAIJDCreation("Dev", "#", "Home", "", "2 hours", "Fresher", "9LPA", "Tamil", "");
 
-			ExtentReportManager.log(Status.PASS, "AI JD Creation test passed successfully for Job Title: " + JOB_TITLE);
+			ExtentReportManager.log(Status.PASS, "AI JD Creation test passed successfully for Job Title: " + JOB_ROLE);
 		} catch (Exception e) {
 			ExtentReportManager.log(Status.FAIL,
-					"AI JD Creation test failed for Job Title: " + JOB_TITLE + ". Error: " + e.getMessage());
+					"AI JD Creation test failed for Job Title: " + JOB_ROLE + ". Error: " + e.getMessage());
 
 			e.printStackTrace();
 			throw new RuntimeException("AI JD Creation test failed.", e);

@@ -15,7 +15,7 @@ public class ConfigLoader extends FrameworkConstants {
 
 	static {
 		loadProperties("config.properties");
-		loadProperties("data.properties"); // Load additional properties file
+		// loadProperties("data.properties"); // Load additional properties file
 	}
 
 	private static void loadProperties(String fileName) {
@@ -54,7 +54,7 @@ public class ConfigLoader extends FrameworkConstants {
 			throw new RuntimeException(errorMessage);
 		}
 
-		ExtentReportManager.log(Status.INFO, "Retrieved property from " + fileName + ": " + key + " = " + value);
+//		ExtentReportManager.log(Status.INFO, "Retrieved property from " + fileName + ": " + key + " = " + value);
 		return value;
 	}
 }

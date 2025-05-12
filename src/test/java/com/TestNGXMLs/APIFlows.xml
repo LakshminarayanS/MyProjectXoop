@@ -4,6 +4,8 @@
 	<test thread-count="5" name="Test">
 		<classes>
 			<class name="com.XooperAPIFlows.AIJDCreation_APIFlow" />
+			<class name="com.XooperAPIFlows.ResumeParser_APIFlow" />
+			<class name="com.XooperAPIFlows.CandidateMatching_APIFlow" />
 		</classes>
 	</test> <!--
 	Test -->

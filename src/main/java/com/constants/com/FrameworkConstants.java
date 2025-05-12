@@ -1,5 +1,6 @@
 package com.constants.com;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import com.Config.com.ConfigLoader;
@@ -30,9 +31,12 @@ public class FrameworkConstants {
 
 	public static final String OTP = ConfigLoader.getProperty("config.properties", "O.T.P");
 
-	public static final String JOB_TITLE = ConfigLoader.getProperty("config.properties", "job.title");
+	public static final String JOB_ROLE = ConfigLoader.getProperty("config.properties", "job.role");
 
-	public static final String JOB_SKILLS = ConfigLoader.getProperty("config.properties", "job.skills");
+	public static final String JOB_SKILLS_RAW = ConfigLoader.getProperty("config.properties", "job.skills");
+
+	public static final String[] JOB_SKILLS = Arrays.stream(JOB_SKILLS_RAW.split(",")).map(String::trim)
+			.toArray(String[]::new);
 
 	public static final String JOB_LOCATION = ConfigLoader.getProperty("config.properties", "job.location");
 
@@ -40,13 +44,17 @@ public class FrameworkConstants {
 
 	public static final String EMPLOYEMENT_TYPE = ConfigLoader.getProperty("config.properties", "employement.type");
 
-	public static final String EXPERIENCE_LEVEL = ConfigLoader.getProperty("config.properties", "experience.level");
+	public static final String MIN_EXPERIENCE = ConfigLoader.getProperty("config.properties", "min_experience");
+	
+	public static final String MAX_EXPERIENCE = ConfigLoader.getProperty("config.properties", "max_experience");
 
-	public static final String SALARY_LEVEL = ConfigLoader.getProperty("config.properties", "salary.level");
+	public static final String INDUSTRY_TYPE = ConfigLoader.getProperty("config.properties", "industry_type");
 
 	public static final String LANGUAGE_PREFERENCE = ConfigLoader.getProperty("config.properties",
 			"language.preference");
 
 	public static final String TONE = ConfigLoader.getProperty("config.properties", "tone");
+	
+	public static final String JOB_DESCRIPTION = ConfigLoader.getProperty("config.properties", "job_description");
 
 }
