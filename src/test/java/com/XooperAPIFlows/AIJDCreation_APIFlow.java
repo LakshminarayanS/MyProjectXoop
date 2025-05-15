@@ -2,9 +2,11 @@ package com.XooperAPIFlows;
 
 import static io.restassured.RestAssured.given;
 
+import org.bson.Document;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
@@ -12,6 +14,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.Status;
 import com.constants.com.FrameworkConstants;
 import com.utils.ExtentReportManager;
+import com.utils.MongoDBUtil;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -24,6 +27,14 @@ public class AIJDCreation_APIFlow extends FrameworkConstants {
 	@BeforeSuite
 	public void setupReport() {
 		ExtentReportManager.createInstance();
+	}
+
+	@BeforeClass
+	public void setup() {
+
+		MongoDBUtil.init(
+				"mongodb+srv://xooper:lsBAmSmNcI0s7uUW@xoopercluster.alvrs.mongodb.net/?retryWrites=true&w=majority&appName=xoopercluster",
+				"recruitment_db");
 	}
 
 	@Test
@@ -69,7 +80,20 @@ public class AIJDCreation_APIFlow extends FrameworkConstants {
 			JSONObject jsonResponse = new JSONObject(responseBody);
 			Assert.assertTrue(jsonResponse.has("retrieved_results"),
 					"Response does not contain expected 'retrieved_results'");
-
+			ExtentReportManager.log(Status.PASS, "'retrieved_results' found in response");
+			
+			String collection = "job_posting";
+		    String fieldName = "job_id";
+		    String fieldValue = jobId;
+		    
+		    Document doc = MongoDBUtil.getDocumentByField(collection, fieldName, fieldValue);
+		    
+		    Assert.assertNotNull(doc, "Candidate document should not be null");
+		    ExtentReportManager.log(Status.PASS, "Document found in MongoDB for job_id: " + jobId);
+		    
+		    Assert.assertEquals(doc.getString("job_id"), jobId);
+		    ExtentReportManager.log(Status.PASS, "MongoDB job_id matches expected: " + jobId);
+			
 			ExtentReportManager.log(Status.PASS, "API test passed for: " + JOB_ROLE);
 
 		} catch (Exception e) {

@@ -99,5 +99,11 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-driver-sync</artifactId>
+			<version>5.5.0</version>
+		</dependency>
+
 	</dependencies>
 </project>
