@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.aventstack.extentreports.Status;
-import com.constants.com.FrameworkConstants;
 import com.utils.ExtentReportManager;
 
 public class ConfigLoader {
@@ -24,7 +23,7 @@ public class ConfigLoader {
 				ExtentReportManager.log(Status.FAIL, errorMessage);
 				throw new RuntimeException(errorMessage);
 			}
-			
+
 			Properties properties = new Properties();
 
 			properties.load(input);
