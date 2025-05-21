@@ -28,9 +28,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITestResult;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
+import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.Status;
 import com.constants.com.FrameworkConstants;
 import com.utils.ExtentReportManager;
@@ -51,13 +53,24 @@ public class BaseClass extends FrameworkConstants {
 	private static Select sc;
 
 	@BeforeSuite
-	public static void setUpSuite() {
+	public static void setupReport() {
 		try {
 			extentReportManager = new ExtentReportManager();
 			ExtentReportManager.createInstance();
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	@AfterSuite
+	public void tearDown() {
+		ExtentReports extent = ExtentReportManager.getInstance();
+		if (extent != null) {
+			extent.flush();
+			System.out.println("Extent report flushed successfully.");
+		} else {
+			System.err.println("Error: ExtentReports instance is null. Report not generated.");
 		}
 	}
 

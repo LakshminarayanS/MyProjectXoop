@@ -3,11 +3,14 @@ package com.utils;
 import static com.mongodb.client.model.Filters.eq;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.bson.Document;
+import org.bson.UuidRepresentation;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.types.ObjectId;
 
+import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -19,14 +22,12 @@ public class MongoDBUtil {
 	private static MongoClient mongoClient;
 	private static MongoDatabase database;
 
-	public static void init(String uri, String dbName) {
+	public static synchronized void init(String uri, String dbName) {
 		if (mongoClient == null) {
-			synchronized (MongoDBUtil.class) {
-				if (mongoClient == null) {
-					mongoClient = MongoClients.create(uri);
-					database = mongoClient.getDatabase(dbName);
-				}
-			}
+			mongoClient = MongoClients
+					.create(MongoClientSettings.builder().applyConnectionString(new ConnectionString(uri))
+							.uuidRepresentation(UuidRepresentation.STANDARD).build());
+			database = mongoClient.getDatabase(dbName);
 		}
 	}
 
@@ -55,27 +56,36 @@ public class MongoDBUtil {
 
 		if (database == null)
 			throw new IllegalStateException("MongoDB not initialized");
-		
+
 		System.out.println("Expected fieldMap: " + fieldMap);
-		
-		 MongoCollection<Document> collection = database.getCollection(collectionName);
 
-		    Document filter = new Document();
-		    for (Map.Entry<String, Object> entry : fieldMap.entrySet()) {
-		        filter.append(entry.getKey(), entry.getValue());
-		    }
+		MongoCollection<Document> collection = database.getCollection(collectionName);
 
-		    CodecRegistry codecRegistry = MongoClientSettings.getDefaultCodecRegistry();
-		    System.out.println("Querying MongoDB collection: " + collectionName);
-		    System.out.println("With filter: " + filter.toBsonDocument(Document.class, codecRegistry).toJson());
+		Document filter = new Document();
+		for (Map.Entry<String, Object> entry : fieldMap.entrySet()) {
+			Object value = entry.getValue();
+			if (value instanceof UUID) {
+				filter.append(entry.getKey(), value.toString());
+			} else {
+				filter.append(entry.getKey(), value);
+			}
+		}
 
-		    return collection.find(filter).first();
+		CodecRegistry codecRegistry = MongoClientSettings.getDefaultCodecRegistry();
+		System.out.println("Querying MongoDB collection: " + collectionName);
+		System.out.println("With filter: " + filter.toBsonDocument(Document.class, codecRegistry).toJson());
+
+		return collection.find(filter).first();
 	}
 
 	public static void close() {
 		if (mongoClient != null) {
-			mongoClient.close();
-			mongoClient = null;
+			try {
+				mongoClient.close();
+			} finally {
+				mongoClient = null;
+				database = null;
+			}
 		}
 	}
 

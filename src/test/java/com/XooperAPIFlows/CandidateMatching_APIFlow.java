@@ -8,13 +8,12 @@ import java.util.UUID;
 
 import org.bson.Document;
 import org.testng.Assert;
-import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import com.Baseclass.com.BaseClass;
 import com.POJO_CandidateMatching.com.CandidateProfile;
-import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utils.ExtentReportManager;
@@ -23,7 +22,7 @@ import com.utils.MongoDBUtil;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-public class CandidateMatching_APIFlow {
+public class CandidateMatching_APIFlow extends BaseClass {
 
 	private static final String CandidateMatch_BASE_URL = "https://dev.xooper.in/candidate_matching/candidates/";
 	private static final String DB_NAME = "recruitment_db";
@@ -33,23 +32,18 @@ public class CandidateMatching_APIFlow {
 	public static UUID candidateID;
 	public static CandidateProfile parsedCandidateProfile;
 
-	@BeforeSuite
-	public void setupReport() {
-		ExtentReportManager.createInstance();
-	}
-
 	@BeforeClass
 	public void setup() {
 
 		MongoDBUtil.init(MONGO_URI, DB_NAME);
 	}
 
-	@Test(dependsOnMethods = { "com.XooperAPIFlows.ResumeParser_APIFlow.resumeParseUploadFile" })
+	@Test
 	public void candidateMatching() {
 
 		try {
 
-			ExtentReportManager.startTest("Candidate Matching API Test Started");
+			ExtentReportManager.startTest("Candidate Matching API Testing Started");
 			ExtentReportManager.log(Status.INFO, "Testing Candidate Matching API");
 
 			CandidateProfile profile = parsedCandidateProfile;
@@ -89,16 +83,14 @@ public class CandidateMatching_APIFlow {
 			int statusCode = response.getStatusCode();
 			String responseBody = response.getBody().asString();
 
-			ExtentReportManager.log(Status.INFO, "Status Code: " + statusCode);
+			ExtentReportManager.log(Status.INFO, "Response Status Code: " + statusCode);
 			ExtentReportManager.log(Status.INFO, "Response Body: " + responseBody);
 
-			System.out.println("Status Code: " + statusCode);
+			System.out.println("Response Status Code: " + statusCode);
 			System.out.println("Response Body: " + responseBody);
 
 			Assert.assertEquals(statusCode, 200, "Response Status Code.");
 			ExtentReportManager.log(Status.PASS, "Test passed with status code 200");
-
-			String collection = COLLECTION_NAME;
 
 			Map<String, Object> fieldMap = new HashMap<>();
 			fieldMap.put("job_id", AIJDCreation_APIFlow.JOB_ID);
@@ -107,11 +99,9 @@ public class CandidateMatching_APIFlow {
 			Document doc = null;
 			int retryCount = 0;
 
-			System.out.println("Document doc " + doc);
-
 			while (doc == null && retryCount < 5) {
-				Thread.sleep(8000);
-				doc = MongoDBUtil.getDocumentByFields(collection, fieldMap);
+				Thread.sleep(5000);
+				doc = MongoDBUtil.getDocumentByFields(COLLECTION_NAME, fieldMap);
 				retryCount++;
 			}
 			System.out.println("MongoDB expected fieldMap : " + fieldMap);
@@ -122,6 +112,9 @@ public class CandidateMatching_APIFlow {
 				Assert.assertEquals(doc.get(entry.getKey()), entry.getValue(), "Mismatch for field: " + entry.getKey());
 			}
 			ExtentReportManager.log(Status.PASS, "Document found in MongoDB for candidate_id and job_id : " + fieldMap);
+
+			ExtentReportManager.log(Status.INFO,
+					"Candidate Matching test data successfully stored in candidate table: " + doc.toJson());
 
 			Assert.assertEquals(doc.getString("job_id"), AIJDCreation_APIFlow.JOB_ID);
 			Assert.assertEquals(doc.getString("candidate_id"), candidateID.toString());
@@ -135,15 +128,9 @@ public class CandidateMatching_APIFlow {
 
 	}
 
-	@AfterSuite
-	public void tearDown() {
-		ExtentReports extent = ExtentReportManager.getInstance();
-		if (extent != null) {
-			extent.flush();
-			System.out.println("Extent report flushed successfully.");
-		} else {
-			System.err.println("Error: ExtentReports instance is null. Report not generated.");
-		}
+	@AfterClass
+	public static void cleanup() {
+		MongoDBUtil.close();
 	}
 
 }

@@ -1,13 +1,10 @@
 package com.constants.com;
 
 import java.util.Arrays;
-import java.util.Properties;
 
 import com.Config.com.ConfigLoader;
 
 public class FrameworkConstants {
-
-	public static final Properties properties = new Properties();
 
 	public static final String BROWSER_NAME = ConfigLoader.getProperty("config.properties", "browser.name");
 
@@ -45,7 +42,7 @@ public class FrameworkConstants {
 	public static final String EMPLOYEMENT_TYPE = ConfigLoader.getProperty("config.properties", "employement.type");
 
 	public static final String MIN_EXPERIENCE = ConfigLoader.getProperty("config.properties", "min_experience");
-	
+
 	public static final String MAX_EXPERIENCE = ConfigLoader.getProperty("config.properties", "max_experience");
 
 	public static final String INDUSTRY_TYPE = ConfigLoader.getProperty("config.properties", "industry_type");
@@ -54,7 +51,7 @@ public class FrameworkConstants {
 			"language.preference");
 
 	public static final String TONE = ConfigLoader.getProperty("config.properties", "tone");
-	
+
 	public static final String JOB_DESCRIPTION = ConfigLoader.getProperty("config.properties", "job_description");
 
 }

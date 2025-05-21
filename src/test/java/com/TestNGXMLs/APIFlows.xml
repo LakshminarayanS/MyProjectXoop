@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Suite" parallel="false">
-	<test thread-count="1" name="Test">
+<suite name="API Test Suite" parallel="false">
+	<test name="AIJD Creation">
+		<classes>
+			<class name="com.XooperAPIFlows.AIJDCreation_APIFlow" />
+		</classes>
+	</test>
+
+	<test name="Resume Parser">
 		<classes>
 			<class name="com.XooperAPIFlows.ResumeParser_APIFlow" />
-			<class name="com.XooperAPIFlows.AIJDCreation_APIFlow" />
+		</classes>
+	</test>
+
+	<test name="Candidate Matching">
+		<classes>
 			<class name="com.XooperAPIFlows.CandidateMatching_APIFlow" />
+		</classes>
+	</test>
+
+	<test name="Skill Gap Analysis">
+		<classes>
 			<class name="com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow" />
 		</classes>
-	</test> <!--
-	Test -->
-</suite> <!--
-Suite -->
+	</test>
+</suite>

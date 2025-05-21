@@ -9,13 +9,12 @@ import com.aventstack.extentreports.Status;
 import com.constants.com.FrameworkConstants;
 import com.utils.ExtentReportManager;
 
-public class ConfigLoader extends FrameworkConstants {
+public class ConfigLoader {
 
 	private static final Map<String, Properties> propertiesMap = new HashMap<>();
 
 	static {
 		loadProperties("config.properties");
-		// loadProperties("data.properties"); // Load additional properties file
 	}
 
 	private static void loadProperties(String fileName) {
@@ -25,7 +24,9 @@ public class ConfigLoader extends FrameworkConstants {
 				ExtentReportManager.log(Status.FAIL, errorMessage);
 				throw new RuntimeException(errorMessage);
 			}
-			// Load the properties file
+			
+			Properties properties = new Properties();
+
 			properties.load(input);
 			propertiesMap.put(fileName, properties);
 			ExtentReportManager.log(Status.INFO, "Successfully loaded " + fileName);

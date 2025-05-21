@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import org.bson.Document;
 import org.json.JSONObject;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
@@ -21,20 +22,28 @@ import io.restassured.response.Response;
 
 public class AIJDCreation_APIFlow extends FrameworkConstants {
 
+	public static ExtentReportManager extentReportManager;
 	private static final String JDCreator_BASE_URL = "https://dev.xooper.in/creator/create-job/";
+	private static final String DB_NAME = "recruitment_db";
+	private static final String COLLECTION_NAME = "job_posting";
+	private static final String MONGO_URI = "mongodb+srv://xooper:lsBAmSmNcI0s7uUW@xoopercluster.alvrs.mongodb.net/?retryWrites=true&w=majority&appName=xoopercluster";
 	public static String JOB_ID;
 
 	@BeforeSuite
-	public void setupReport() {
-		ExtentReportManager.createInstance();
+	public static void setupReport() {
+		try {
+			extentReportManager = new ExtentReportManager();
+			ExtentReportManager.createInstance();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@BeforeClass
 	public void setup() {
 
-		MongoDBUtil.init(
-				"mongodb+srv://xooper:lsBAmSmNcI0s7uUW@xoopercluster.alvrs.mongodb.net/?retryWrites=true&w=majority&appName=xoopercluster",
-				"recruitment_db");
+		MongoDBUtil.init(MONGO_URI, DB_NAME);
 	}
 
 	@Test
@@ -42,10 +51,10 @@ public class AIJDCreation_APIFlow extends FrameworkConstants {
 
 		try {
 
-			ExtentReportManager.startTest("AI JD Creation API Test - Valid Data - " + JOB_ROLE);
+			ExtentReportManager.startTest("AI JD Creation API Test with Valid Data - " + JOB_ROLE);
 			ExtentReportManager.log(Status.INFO, "Testing AI JD Creation API with valid data for " + JOB_ROLE);
 
-			ExtentReportManager.log(Status.INFO, "Starting API test for: " + JOB_ROLE);
+			ExtentReportManager.log(Status.INFO, "JD Creator API starting test for: " + JOB_ROLE);
 
 			JSONObject requestBody = new JSONObject();
 			requestBody.put("role", JOB_ROLE);
@@ -70,6 +79,8 @@ public class AIJDCreation_APIFlow extends FrameworkConstants {
 			String responseBody = response.getBody().asString();
 			ExtentReportManager.log(Status.INFO, "Response Status Code: " + statusCode);
 			ExtentReportManager.log(Status.INFO, "Response Body: " + responseBody);
+
+			System.out.println("AI JD Creator Response Status Code: " + statusCode);
 			System.out.println("Response Body: " + responseBody);
 
 			String jobId = response.jsonPath().getString("job_id");
@@ -81,19 +92,22 @@ public class AIJDCreation_APIFlow extends FrameworkConstants {
 			Assert.assertTrue(jsonResponse.has("retrieved_results"),
 					"Response does not contain expected 'retrieved_results'");
 			ExtentReportManager.log(Status.PASS, "'retrieved_results' found in response");
-			
-			String collection = "job_posting";
-		    String fieldName = "job_id";
-		    String fieldValue = jobId;
-		    
-		    Document doc = MongoDBUtil.getDocumentByField(collection, fieldName, fieldValue);
-		    
-		    Assert.assertNotNull(doc, "Candidate document should not be null");
-		    ExtentReportManager.log(Status.PASS, "Document found in MongoDB for job_id: " + jobId);
-		    
-		    Assert.assertEquals(doc.getString("job_id"), jobId);
-		    ExtentReportManager.log(Status.PASS, "MongoDB job_id matches expected: " + jobId);
-			
+
+			String collection = COLLECTION_NAME;
+			String fieldName = "job_id";
+			String fieldValue = jobId;
+
+			Document doc = MongoDBUtil.getDocumentByField(collection, fieldName, fieldValue);
+
+			Assert.assertNotNull(doc, "Candidate document should not be null");
+			ExtentReportManager.log(Status.PASS, "Document found in MongoDB for job_id: " + jobId);
+
+			Assert.assertEquals(doc.getString("job_id"), jobId);
+			ExtentReportManager.log(Status.PASS, "MongoDB job_id matches as expected: " + jobId);
+
+			ExtentReportManager.log(Status.INFO,
+					"Ai JD Creator test data successfully stored in job_posting table: " + doc.toJson());
+
 			ExtentReportManager.log(Status.PASS, "API test passed for: " + JOB_ROLE);
 
 		} catch (Exception e) {
@@ -102,6 +116,11 @@ public class AIJDCreation_APIFlow extends FrameworkConstants {
 			throw new RuntimeException("Valid AIJD test failed", e);
 		}
 
+	}
+
+	@AfterClass
+	public static void cleanup() {
+		MongoDBUtil.close();
 	}
 
 	@AfterSuite
