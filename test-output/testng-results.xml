@@ -2,76 +2,76 @@
 <testng-results ignored="0" total="4" passed="4" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2025-05-26T09:34:53 IST" name="API Test Suite" finished-at="2025-05-26T09:35:32 IST" duration-ms="38032">
+  <suite started-at="2025-05-27T14:07:30 IST" name="API Test Suite" finished-at="2025-05-27T14:08:17 IST" duration-ms="47031">
     <groups>
     </groups>
-    <test started-at="2025-05-26T09:34:53 IST" name="AIJD Creation" finished-at="2025-05-26T09:34:58 IST" duration-ms="4859">
+    <test started-at="2025-05-27T14:07:30 IST" name="AIJD Creation" finished-at="2025-05-27T14:07:41 IST" duration-ms="11058">
       <class name="com.XooperAPIFlows.AIJDCreation_APIFlow">
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.XooperAPIFlows.AIJDCreation_APIFlow@510f3d34]" started-at="2025-05-26T09:34:54 IST" name="setup" finished-at="2025-05-26T09:34:54 IST" duration-ms="463" status="PASS">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.XooperAPIFlows.AIJDCreation_APIFlow@510f3d34]" started-at="2025-05-27T14:07:30 IST" name="setup" finished-at="2025-05-27T14:07:30 IST" duration-ms="260" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="AIJDCreatorTestData()[pri:0, instance:com.XooperAPIFlows.AIJDCreation_APIFlow@510f3d34]" started-at="2025-05-26T09:34:54 IST" name="AIJDCreatorTestData" finished-at="2025-05-26T09:34:58 IST" duration-ms="4317" status="PASS">
+        <test-method signature="AIJDCreatorTestData()[pri:0, instance:com.XooperAPIFlows.AIJDCreation_APIFlow@510f3d34]" started-at="2025-05-27T14:07:30 IST" name="AIJDCreatorTestData" finished-at="2025-05-27T14:07:41 IST" duration-ms="10741" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- AIJDCreatorTestData -->
-        <test-method is-config="true" signature="cleanup()[pri:0, instance:com.XooperAPIFlows.AIJDCreation_APIFlow@510f3d34]" started-at="2025-05-26T09:34:58 IST" name="cleanup" finished-at="2025-05-26T09:34:58 IST" duration-ms="33" status="PASS">
+        <test-method is-config="true" signature="cleanup()[pri:0, instance:com.XooperAPIFlows.AIJDCreation_APIFlow@510f3d34]" started-at="2025-05-27T14:07:41 IST" name="cleanup" finished-at="2025-05-27T14:07:41 IST" duration-ms="31" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- cleanup -->
       </class> <!-- com.XooperAPIFlows.AIJDCreation_APIFlow -->
     </test> <!-- AIJD Creation -->
-    <test started-at="2025-05-26T09:34:58 IST" name="Resume Parser" finished-at="2025-05-26T09:35:13 IST" duration-ms="14202">
+    <test started-at="2025-05-27T14:07:41 IST" name="Resume Parser" finished-at="2025-05-27T14:07:56 IST" duration-ms="14846">
       <class name="com.XooperAPIFlows.ResumeParser_APIFlow">
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.XooperAPIFlows.ResumeParser_APIFlow@37271612]" started-at="2025-05-26T09:34:58 IST" name="setup" finished-at="2025-05-26T09:34:58 IST" duration-ms="38" status="PASS">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.XooperAPIFlows.ResumeParser_APIFlow@37271612]" started-at="2025-05-27T14:07:41 IST" name="setup" finished-at="2025-05-27T14:07:41 IST" duration-ms="14" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="resumeParseUploadFile()[pri:0, instance:com.XooperAPIFlows.ResumeParser_APIFlow@37271612]" started-at="2025-05-26T09:34:58 IST" name="resumeParseUploadFile" finished-at="2025-05-26T09:35:13 IST" duration-ms="14131" status="PASS">
+        <test-method signature="resumeParseUploadFile()[pri:0, instance:com.XooperAPIFlows.ResumeParser_APIFlow@37271612]" started-at="2025-05-27T14:07:41 IST" name="resumeParseUploadFile" finished-at="2025-05-27T14:07:56 IST" duration-ms="14796" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- resumeParseUploadFile -->
-        <test-method is-config="true" signature="cleanup()[pri:0, instance:com.XooperAPIFlows.ResumeParser_APIFlow@37271612]" started-at="2025-05-26T09:35:13 IST" name="cleanup" finished-at="2025-05-26T09:35:13 IST" duration-ms="32" status="PASS">
+        <test-method is-config="true" signature="cleanup()[pri:0, instance:com.XooperAPIFlows.ResumeParser_APIFlow@37271612]" started-at="2025-05-27T14:07:56 IST" name="cleanup" finished-at="2025-05-27T14:07:56 IST" duration-ms="33" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- cleanup -->
       </class> <!-- com.XooperAPIFlows.ResumeParser_APIFlow -->
     </test> <!-- Resume Parser -->
-    <test started-at="2025-05-26T09:35:13 IST" name="Candidate Matching" finished-at="2025-05-26T09:35:20 IST" duration-ms="6945">
+    <test started-at="2025-05-27T14:07:56 IST" name="Candidate Matching" finished-at="2025-05-27T14:08:05 IST" duration-ms="9369">
       <class name="com.XooperAPIFlows.CandidateMatching_APIFlow">
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.XooperAPIFlows.CandidateMatching_APIFlow@77f80c04]" started-at="2025-05-26T09:35:13 IST" name="setup" finished-at="2025-05-26T09:35:13 IST" duration-ms="44" status="PASS">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.XooperAPIFlows.CandidateMatching_APIFlow@77f80c04]" started-at="2025-05-27T14:07:56 IST" name="setup" finished-at="2025-05-27T14:07:56 IST" duration-ms="12" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="candidateMatching()[pri:0, instance:com.XooperAPIFlows.CandidateMatching_APIFlow@77f80c04]" started-at="2025-05-26T09:35:13 IST" name="candidateMatching" finished-at="2025-05-26T09:35:19 IST" duration-ms="6869" status="PASS">
+        <test-method signature="candidateMatching()[pri:0, instance:com.XooperAPIFlows.CandidateMatching_APIFlow@77f80c04]" started-at="2025-05-27T14:07:56 IST" name="candidateMatching" finished-at="2025-05-27T14:08:05 IST" duration-ms="9328" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- candidateMatching -->
-        <test-method is-config="true" signature="cleanup()[pri:0, instance:com.XooperAPIFlows.CandidateMatching_APIFlow@77f80c04]" started-at="2025-05-26T09:35:19 IST" name="cleanup" finished-at="2025-05-26T09:35:20 IST" duration-ms="27" status="PASS">
+        <test-method is-config="true" signature="cleanup()[pri:0, instance:com.XooperAPIFlows.CandidateMatching_APIFlow@77f80c04]" started-at="2025-05-27T14:08:05 IST" name="cleanup" finished-at="2025-05-27T14:08:05 IST" duration-ms="27" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- cleanup -->
       </class> <!-- com.XooperAPIFlows.CandidateMatching_APIFlow -->
     </test> <!-- Candidate Matching -->
-    <test started-at="2025-05-26T09:35:20 IST" name="Skill Gap Analysis" finished-at="2025-05-26T09:35:32 IST" duration-ms="11963">
+    <test started-at="2025-05-27T14:08:05 IST" name="Skill Gap Analysis" finished-at="2025-05-27T14:08:17 IST" duration-ms="11728">
       <class name="com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow">
-        <test-method is-config="true" signature="setupReport()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-26T09:34:53 IST" name="setupReport" finished-at="2025-05-26T09:34:53 IST" duration-ms="322" status="PASS">
+        <test-method is-config="true" signature="setupReport()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-27T14:07:30 IST" name="setupReport" finished-at="2025-05-27T14:07:30 IST" duration-ms="259" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setupReport -->
-        <test-method is-config="true" signature="setup()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-26T09:35:20 IST" name="setup" finished-at="2025-05-26T09:35:20 IST" duration-ms="57" status="PASS">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-27T14:08:05 IST" name="setup" finished-at="2025-05-27T14:08:05 IST" duration-ms="26" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setup -->
-        <test-method signature="ReportGeneration()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-26T09:35:20 IST" name="ReportGeneration" finished-at="2025-05-26T09:35:31 IST" duration-ms="11875" status="PASS">
+        <test-method signature="ReportGeneration()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-27T14:08:05 IST" name="ReportGeneration" finished-at="2025-05-27T14:08:17 IST" duration-ms="11674" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- ReportGeneration -->
-        <test-method is-config="true" signature="cleanup()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-26T09:35:31 IST" name="cleanup" finished-at="2025-05-26T09:35:32 IST" duration-ms="27" status="PASS">
+        <test-method is-config="true" signature="cleanup()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-27T14:08:17 IST" name="cleanup" finished-at="2025-05-27T14:08:17 IST" duration-ms="26" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- cleanup -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-26T09:35:32 IST" name="tearDown" finished-at="2025-05-26T09:35:32 IST" duration-ms="457" status="PASS">
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.XooperAPIFlows.SkillGapAnalysisReport_APIFlow@68e5eea7]" started-at="2025-05-27T14:08:17 IST" name="tearDown" finished-at="2025-05-27T14:08:17 IST" duration-ms="260" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->

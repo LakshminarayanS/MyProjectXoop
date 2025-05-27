@@ -3,15 +3,15 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="com.XooperAPIFlows.AIJDCreation_APIFlow">
+      <class name="com.XooperAPIFlows.ResumeParser_APIFlow">
         <methods>
+          <include name="cleanup"/>
+          <include name="resumeParseUploadFile"/>
           <include name="setupReport"/>
           <include name="tearDown"/>
           <include name="setup"/>
-          <include name="cleanup"/>
-          <include name="AIJDCreatorTestData"/>
         </methods>
-      </class> <!-- com.XooperAPIFlows.AIJDCreation_APIFlow -->
+      </class> <!-- com.XooperAPIFlows.ResumeParser_APIFlow -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

@@ -20,7 +20,6 @@ import io.restassured.response.Response;
 
 public class AIJDCreation_APIFlow extends BaseClass {
 
-	public static ExtentReportManager extentReportManager;
 	private static final String JDCreator_BASE_URL = "https://dev.xooper.in/creator/create-job/";
 	private static final String DB_NAME = "recruitment_db";
 	private static final String COLLECTION_NAME = "job_posting";
